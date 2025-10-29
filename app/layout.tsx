@@ -1,34 +1,57 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type React from "react"
+import type { Metadata } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+import PlausibleProvider from "next-plausible"
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
+import "./globals.css"
+import ThemeToggle from "./theme-toggle"
 
 export const metadata: Metadata = {
-    title: "Pr5 - Pranjal Mandavkar",
-    description: "I use linux and neovim",
-};
+    title: "Pranjal Mandavkar",
+    description:
+        "Developer living in Mumbai. Building things with React and solving some problems inside neovim with the help of terminal.",
+    metadataBase: new URL("https://pr5.dev"),
+    icons: {
+        icon: "/favicon.ico",
+        shortcut: "/favicon.ico",
+    },
+    openGraph: {
+        title: "Pranjal Mandavkar",
+        description: "Developer living in Mumbai (mostly inside terminal).",
+        url: "https://pr5.dev",
+        siteName: "Pranjal Mandavkar",
+        images: [
+            {
+                url: "/opengraph-image",
+                width: 1200,
+                height: 630,
+                alt: "Pranjal Mandavkar",
+            },
+        ],
+        locale: "en_US",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Pranjal Mandavkar",
+        description: "Developer living in Mumbai (mostly inside terminal).",
+        images: ["/opengraph-image"],
+    },
+}
 
 export default function RootLayout({
     children,
 }: Readonly<{
-    children: React.ReactNode;
+    children: React.ReactNode
 }>) {
     return (
-        <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                {children}
+        <html lang="en" className="dark">
+            <head>
+                <PlausibleProvider domain="pr5.dev" />
+            </head>
+            <body className={`font-sans antialiased`}>{children}
+                <ThemeToggle />
             </body>
         </html>
-    );
+    )
 }

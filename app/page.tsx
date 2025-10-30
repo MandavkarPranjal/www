@@ -36,6 +36,10 @@ export default function Home() {
                         </Link>
                     </p>
                 </div>
+
+                <h1 className="mt-8 mb-6 text-xl font-serif font-medium tracking-tight text-foreground/95 italic">
+                    some cool projects
+                </h1>
             </div>
         </main >
     )

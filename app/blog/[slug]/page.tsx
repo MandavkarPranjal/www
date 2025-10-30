@@ -1,3 +1,4 @@
+import { ViewTransition } from 'react'
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
@@ -75,20 +76,27 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     const { frontmatter, content } = post
 
     return (
-        <main className="min-h-screen px-6 py-16 md:py-24">
-            <article className="mx-auto max-w-2xl">
-                <h1 className="mb-4 text-4xl font-serif font-medium tracking-tight text-foreground">
-                    {frontmatter.title}
-                </h1>
-                {frontmatter.date && (
-                    <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                        Last Updated on {new Date(frontmatter.date).toLocaleDateString()}
-                    </p>
-                )}
-                <div className="prose-ui">
-                    <MDXRemote source={content} components={components as any} />
-                </div>
-            </article>
-        </main>
+        <ViewTransition>
+            <main className="min-h-screen px-6 py-16 md:py-24">
+                <article className="mx-auto max-w-2xl">
+                    <ViewTransition name={`title-${slug}`}>
+                        <h1 className="mb-4 text-4xl font-serif font-medium tracking-tight text-foreground">
+                            {frontmatter.title}
+                        </h1>
+                    </ViewTransition>
+                    {frontmatter.date && (
+
+                        <ViewTransition name={`date-${slug}`}>
+                            <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
+                                Last Updated on {new Date(frontmatter.date).toLocaleDateString()}
+                            </p>
+                        </ViewTransition>
+                    )}
+                    <div className="prose-ui">
+                        <MDXRemote source={content} components={components as any} />
+                    </div>
+                </article>
+            </main>
+        </ViewTransition>
     )
 }

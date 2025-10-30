@@ -41,7 +41,7 @@ export default function Home() {
                 <h1 className="mt-18 mb-6 text-xl font-serif font-medium tracking-tight text-foreground italic">
                     some cool projects :)
                 </h1>
-                <div className="space-y-6 text-base leading-relaxed text-foreground/60">
+                <div className="space-y-6 divide-y divide-border/80 text-base leading-relaxed text-foreground/60">
                     <div className="flex flex-col space-y-2 tracking-tight">
                         <Link
                             href="https://whataduck.pr5.dev"

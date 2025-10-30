@@ -4,7 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google"
 import PlausibleProvider from "next-plausible"
 
 import "./globals.css"
-import ThemeToggle from "./theme-toggle"
+import "@prose-ui/next/prose-ui.css"
+import { ThemeSwitch } from "@/components/ui/theme-switch-button"
 
 export const metadata: Metadata = {
     title: "Pranjal Mandavkar",
@@ -49,8 +50,11 @@ export default function RootLayout({
             <head>
                 <PlausibleProvider domain="pr5.dev" />
             </head>
-            <body className={`font-sans antialiased`}>{children}
-                <ThemeToggle />
+            <body className={`font-sans antialiased`}>
+                <div className="fixed right-4 top-4 z-50">
+                    <ThemeSwitch />
+                </div>
+                {children}
             </body>
         </html>
     )

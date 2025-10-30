@@ -2,7 +2,28 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { getAllPosts, getPostBySlug } from "@/lib/blog"
-import MDXComponents from "@/components/mdx-components"
+import { mdxComponents, CodeBlock } from "@prose-ui/next"
+import type React from "react"
+
+const Pre = (props: React.HTMLAttributes<HTMLPreElement>) => {
+    const child = props.children as any
+    const code = child && typeof child === "object" && "props" in child ? (child as any).props : undefined
+    const className: string | undefined = code?.className
+    const language =
+        typeof className === "string" && className.startsWith("language-")
+            ? className.replace("language-", "")
+            : undefined
+    const codeChildren = code?.children
+    if (language && codeChildren) {
+        return <CodeBlock language={language}>{codeChildren}</CodeBlock>
+    }
+    return <pre {...props} />
+}
+
+const components = {
+    ...mdxComponents,
+    pre: Pre,
+}
 
 export async function generateStaticParams() {
     return getAllPosts().map((p) => ({ slug: p.slug }))
@@ -36,8 +57,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         Last Updated on {new Date(frontmatter.date).toLocaleDateString()}
                     </p>
                 )}
-                <div>
-                    <MDXRemote source={content} components={MDXComponents} />
+                <div className="prose-ui">
+                    <MDXRemote source={content} components={components as any} />
                 </div>
             </article>
         </main>

@@ -5,14 +5,15 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import { getAllPosts, getPostBySlug } from "@/lib/blog"
 import { mdxComponents, CodeBlock } from "@prose-ui/next"
 import type React from "react"
+import type { BundledLanguage } from "shiki"
 
 const Pre = (props: React.HTMLAttributes<HTMLPreElement>) => {
     const child = props.children as any
     const code = child && typeof child === "object" && "props" in child ? (child as any).props : undefined
     const className: string | undefined = code?.className
-    const language =
+    const language: BundledLanguage | undefined =
         typeof className === "string" && className.startsWith("language-")
-            ? className.replace("language-", "")
+            ? (className.replace("language-", "") as BundledLanguage)
             : undefined
     const codeChildren = code?.children
     if (language && codeChildren) {

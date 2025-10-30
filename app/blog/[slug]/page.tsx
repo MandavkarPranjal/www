@@ -33,9 +33,37 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params
     const post = getPostBySlug(slug)
     if (!post) return {}
+
+    const title = post.frontmatter.title || slug
+    const description = post.frontmatter.description
+
     return {
-        title: post.frontmatter.title,
-        description: post.frontmatter.description,
+        title,
+        description,
+        alternates: {
+            canonical: `/blog/${slug}`,
+        },
+        openGraph: {
+            title,
+            description: description || undefined,
+            url: `/blog/${slug}`,
+            type: "article",
+            images: [
+                {
+                    url: `/blog/${slug}/opengraph-image`,
+                    width: 1200,
+                    height: 630,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description: description || undefined,
+            images: [`/blog/${slug}/opengraph-image`],
+        },
+        keywords: post.frontmatter.tags,
     }
 }
 

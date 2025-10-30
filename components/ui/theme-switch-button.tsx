@@ -20,21 +20,34 @@ export function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
     document.documentElement.classList.toggle('dark', savedTheme === 'dark')
   }, [])
 
-  // Toggle theme
-  const toggleTheme = React.useCallback(() => {
+  // Toggle theme with click-origin ripple
+  const toggleTheme = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     const startViewTransition = (document as any).startViewTransition?.bind(document)
 
-    if (startViewTransition) {
+    // Store click coordinates for CSS reveal origin
+    const x = e.clientX
+    const y = e.clientY
+    const root = document.documentElement
+    if (x === 0 && y === 0) {
+      // Keyboard activation: let CSS fall back to center
+      root.style.removeProperty('--x')
+      root.style.removeProperty('--y')
+    } else {
+      root.style.setProperty('--x', `${x}px`)
+      root.style.setProperty('--y', `${y}px`)
+    }
+
+    if (startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       startViewTransition(() => {
-        document.documentElement.classList.toggle('dark', newTheme === 'dark')
+        root.classList.toggle('dark', newTheme === 'dark')
       })
       setTheme(newTheme)
       localStorage.setItem('theme', newTheme)
     } else {
       setTheme(newTheme)
       localStorage.setItem('theme', newTheme)
-      document.documentElement.classList.toggle('dark', newTheme === 'dark')
+      root.classList.toggle('dark', newTheme === 'dark')
     }
   }, [theme])
 

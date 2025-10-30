@@ -38,7 +38,7 @@ export default function Home() {
                     </p>
                 </div>
 
-                <h1 className="mt-8 mb-6 text-xl font-serif font-medium tracking-tight text-foreground italic">
+                <h1 className="mt-18 mb-6 text-xl font-serif font-medium tracking-tight text-foreground italic">
                     some cool projects :)
                 </h1>
                 <div className="space-y-6 text-base leading-relaxed text-foreground/60">

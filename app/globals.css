@@ -238,3 +238,10 @@ body,
   /* Apply the reveal animation */
   animation: reveal 0.9s ease-in-out forwards;
 }
+
+/* Override prose-ui container bg to match page */
+.prose-ui {
+  /* Ensure container blends with page background in all themes */
+  background-color: var(--background) !important;
+  background: var(--background) !important;
+}

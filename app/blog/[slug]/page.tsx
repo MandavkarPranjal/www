@@ -78,18 +78,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
     return (
         <ViewTransition>
-            <main className="min-h-screen px-6 py-16 md:py-24">
-                <article className="mx-auto max-w-2xl">
+            <main className="min-h-screen px-6 pb-24 pt-24 md:px-12">
+                <article className="mx-auto w-full max-w-3xl space-y-8">
                     <ViewTransition name={`title-${slug}`}>
-                        <h1 className="mb-4 text-4xl font-serif font-medium tracking-tight text-foreground">
+                        <h1 className="text-balance text-4xl font-serif font-medium tracking-tight text-foreground sm:text-5xl">
                             {frontmatter.title}
                         </h1>
                     </ViewTransition>
                     {frontmatter.date && (
 
                         <ViewTransition name={`date-${slug}`}>
-                            <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                                Last Updated on {new Date(frontmatter.date).toLocaleDateString()}
+                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/70">
+                                Updated {new Date(frontmatter.date).toLocaleDateString(undefined, {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
                             </p>
                         </ViewTransition>
                     )}

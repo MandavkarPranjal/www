@@ -57,7 +57,7 @@ export async function GithubInfo({
       target="_blank"
       {...props}
       className={cn(
-        'flex flex-col gap-1.5 p-2 rounded-lg text-sm text-fd-foreground/80 transition-colors lg:flex-row lg:items-center hover:text-fd-accent-foreground hover:bg-fd-accent',
+        'flex flex-col gap-1.5 rounded-xl border border-border/60 bg-background/80 px-3 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/40 hover:text-foreground/85 hover:shadow-sm lg:flex-row lg:items-center',
         props.className,
       )}
     >
@@ -68,7 +68,7 @@ export async function GithubInfo({
         </svg>
         {owner}/{repo}
       </p>
-      <p className="flex text-xs items-center gap-1 text-fd-muted-foreground">
+      <p className="flex items-center gap-1 text-xs text-muted-foreground">
         <Star className="size-3" />
         {humanizedStars}
       </p>

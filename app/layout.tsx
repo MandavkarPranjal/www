@@ -7,6 +7,9 @@ import "./globals.css"
 import "@prose-ui/next/prose-ui.css"
 import { ThemeSwitch } from "@/components/ui/theme-switch-button"
 
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+
 export const metadata: Metadata = {
     title: "Pranjal Mandavkar",
     description:
@@ -46,11 +49,11 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en" className="dark">
+        <html lang="en" className="dark" suppressHydrationWarning>
             <head>
                 <PlausibleProvider domain="pr5.dev" />
             </head>
-            <body className={`font-sans antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
                 <div className="fixed right-4 top-4 z-50">
                     <ThemeSwitch />
                 </div>

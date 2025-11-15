@@ -6,6 +6,19 @@ import { getAllPosts } from "@/lib/blog"
 export const metadata: Metadata = {
     title: "Blog",
     description: "Notes and posts",
+    openGraph: {
+        title: "Blog",
+        description: "Notes and posts",
+        url: "https://pr5.dev/blog",
+        siteName: "Pranjal;s blog",
+        locale: "en_US",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Blog",
+        description: "Notes and posts",
+    },
 }
 
 export default function BlogIndex() {

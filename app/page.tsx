@@ -38,6 +38,17 @@ export default function Home() {
                     </p>
                 </div>
 
+                <div className="mt-8">
+                    <Link
+                        href="https://cal.com/lossstheaven/15min"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center rounded-full border border-border px-4 py-1.5 text-sm font-medium text-foreground/80 hover:bg-accent/10 hover:text-foreground transition-colors"
+                    >
+                        book a 15-min call
+                    </Link>
+                </div>
+
                 <h1 className="mt-18 mb-6 text-xl font-serif font-medium tracking-tight text-foreground italic">
                     some cool projects :)
                 </h1>

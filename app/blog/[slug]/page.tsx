@@ -22,9 +22,23 @@ const Pre = (props: React.HTMLAttributes<HTMLPreElement>) => {
     return <pre {...props} />
 }
 
+const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => {
+    if (props.type === "checkbox") {
+        return (
+            <input
+                {...props}
+                disabled
+                className="mt-1.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+            />
+        )
+    }
+    return <input {...props} />
+}
+
 const components = {
     ...mdxComponents,
     pre: Pre,
+    input: Input,
 }
 
 export async function generateStaticParams() {
@@ -76,6 +90,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
     const { frontmatter, content } = post
 
+    const processedContent = content
+        .replace(/^(\s*)- \[x\] (.+)$/gm, '$1- <s>*$2*</s>')
+        .replace(/^(\s*)- \[ \] (.+)$/gm, '$1- $2')
+
     return (
         <ViewTransition>
             <main className="min-h-screen px-6 py-16 md:py-24">
@@ -94,7 +112,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         </ViewTransition>
                     )}
                     <div className="prose-ui">
-                        <MDXRemote source={content} components={components as any} />
+                        <MDXRemote source={processedContent} components={components as any} />
                     </div>
                 </article>
             </main>

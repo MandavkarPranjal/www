@@ -91,7 +91,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     const { frontmatter, content } = post
 
     const processedContent = content
-        .replace(/^(\s*)- \[x\] (.+)$/gm, '$1- <s>*$2*</s>')
+        .replace(/^(\s*)- \[x\] (.+)$/gm, '$1- <s className="italic text-muted-foreground">$2</s>')
         .replace(/^(\s*)- \[ \] (.+)$/gm, '$1- $2')
 
     return (

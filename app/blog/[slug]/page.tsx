@@ -2,6 +2,7 @@ import { ViewTransition } from 'react'
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
+import remarkGfm from "remark-gfm"
 import { getAllPosts, getPostBySlug } from "@/lib/blog"
 import { mdxComponents, CodeBlock } from "@prose-ui/next"
 import type React from "react"
@@ -112,7 +113,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         </ViewTransition>
                     )}
                     <div className="prose-ui">
-                        <MDXRemote source={processedContent} components={components as any} />
+                        <MDXRemote source={processedContent} components={components as any} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
                     </div>
                 </article>
             </main>

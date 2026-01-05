@@ -1,0 +1,36 @@
+---
+title: Benchmarks are not reliable
+description:
+date: 2026-1-5
+published: false
+---
+
+Doing AI Coding without any coding agent is bizzare, it's like not using IDEs for coding.
+Using ChatGPT or any other AI web-app is like using Notepad for coding. The LLMs doesn't have any context for codebase, tools or anything. It's just give you answer based on its training data.
+
+I know there are some people that uses web-app like it knew everything about their codebase, they just copy-paste errors and give direct related file in context and ask them fix the error. Sometime AI fix those error in single run, but most of time it require multiple runs with more context. But if they uses coding agent like [Opencode](https://opencode.ai), even with the free models, their bug-fixes will be fast and will be using it add new features.
+
+If you are using web-app, then using models based on benchmarks is acceptable. But if you are using LLMs with coding agent then benchmark score doesn't hold much value.
+
+## *Good Context = Good Results*
+
+Manually adding context to chat session is not a good practice, cause us human make errors/mistakes which may lead to missing context. But if LLMs has right tool to add context itself or to search whole codebase(*it will not do it, unless u write shit code*) if want to, it will output a good code
+
+<Callout>
+*Always use model based on need,
+not on intelligence or benchmark score.*
+</Callout>
+
+How I use AI to write code
+---
+
+*I use OpenCode as my coding agent*
+
+| Workflow | Model |
+| :--- | ---: |
+| Searching docs or codebase | Claude Haiku 4.5 |
+| Planning | Claude Opus 4.5 |
+| Writing Code | Claude Haiku 4.5 / *(rarely)* Claude Opus 4.5 |
+| UI/UX | GPT-5.2 / GPT-5.1 Codex max / Google Gemini 3 Pro |
+| Learning new things | [btca](https://btca.dev) with Claude Haiku 4.5|
+

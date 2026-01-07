@@ -95,6 +95,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         .replace(/^(\s*)- \[x\] (.+)$/gm, '$1- <s className="italic text-muted-foreground">$2</s>')
         .replace(/^(\s*)- \[ \] (.+)$/gm, '$1- $2')
 
+    const wordCount = processedContent.split(/\s+/).filter((word) => word.length > 0).length
+    const readingTime = Math.max(1, Math.ceil(wordCount / 200))
+
     return (
         <ViewTransition>
             <main className="min-h-screen px-6 py-16 md:py-24">
@@ -108,7 +111,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                         <ViewTransition name={`date-${slug}`}>
                             <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                                Last Updated on {new Date(frontmatter.date).toLocaleDateString()}
+                                Last Updated on {new Date(frontmatter.date).toLocaleDateString()} · {readingTime} min read
                             </p>
                         </ViewTransition>
                     )}

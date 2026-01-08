@@ -84,6 +84,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
 }
 
+function formatDate(dateString: string): string {
+    const date = new Date(dateString)
+    const currentYear = new Date().getFullYear()
+    const day = date.getDate()
+    const month = date.toLocaleDateString('en-US', { month: 'short' })
+    const year = date.getFullYear()
+
+    if (year === currentYear) {
+        return `${day} ${month}`
+    }
+    return `${day} ${month} ${year}`
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const post = getPostBySlug(slug)
@@ -111,7 +124,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                         <ViewTransition name={`date-${slug}`}>
                             <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                                Last Updated on {new Date(frontmatter.date).toLocaleDateString()} · {readingTime} min read
+                                Last Updated on {formatDate(frontmatter.date)} · {readingTime} min read
                             </p>
                         </ViewTransition>
                     )}

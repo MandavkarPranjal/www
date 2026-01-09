@@ -124,7 +124,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                         <ViewTransition name={`date-${slug}`}>
                             <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                                Last Updated on {formatDate(frontmatter.date)} · {readingTime} min read
+                                {formatDate(frontmatter.date)} · {readingTime} min read
                             </p>
                         </ViewTransition>
                     )}

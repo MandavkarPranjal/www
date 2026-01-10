@@ -1,5 +1,5 @@
 import { cn } from '@/lib/cn';
-import { Star } from 'lucide-react';
+import { IconStar } from '@tabler/icons-react';
 import { type AnchorHTMLAttributes } from 'react';
 
 async function getRepoStarsAndForks(
@@ -69,7 +69,7 @@ export async function GithubInfo({
         {owner}/{repo}
       </p>
       <p className="flex text-xs items-center gap-1 text-fd-muted-foreground">
-        <Star className="size-3" />
+        <IconStar className="size-3" />
         {humanizedStars}
       </p>
     </a>

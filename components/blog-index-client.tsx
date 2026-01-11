@@ -36,29 +36,15 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                     {/* Search Bar */}
                     <div className="mb-8">
                         <div className="relative">
-                            <IconSearch className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <IconSearch className="absolute left-0 top-1.5 h-4 w-4 text-muted-foreground" />
                             <input
                                 type="text"
-                                placeholder="Search posts..."
+                                placeholder="Search..."
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                className="w-full rounded-lg border border-border bg-background pl-10 pr-10 py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
+                                className="w-full border-0 border-b border-border bg-transparent pl-6 pr-6 py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus:ring-0"
                             />
-                            {query && (
-                                <button
-                                    onClick={handleClear}
-                                    className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
-                                    aria-label="Clear search"
-                                >
-                                    <IconX className="h-4 w-4" />
-                                </button>
-                            )}
                         </div>
-                        {query && (
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} found
-                            </p>
-                        )}
                     </div>
 
                     {/* Posts List */}

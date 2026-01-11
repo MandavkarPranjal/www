@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { IconSearch, IconX } from '@tabler/icons-react'
+import { useEffect } from 'react'
+import { IconSearch } from '@tabler/icons-react'
 
 interface MobileSearchDrawerProps {
     isOpen: boolean

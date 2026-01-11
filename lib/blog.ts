@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-export type PostFrontmatter = {
+type PostFrontmatter = {
   title: string
   description?: string
   date?: string
@@ -10,7 +10,7 @@ export type PostFrontmatter = {
   tags?: string[]
 }
 
-export type Post = {
+type Post = {
   slug: string
   content: string
   frontmatter: PostFrontmatter
@@ -25,7 +25,7 @@ export type PostWithMeta = {
 
 const POSTS_DIR = path.join(process.cwd(), "content", "blog")
 
-export function getPostSlugs(): string[] {
+function getPostSlugs(): string[] {
   if (!fs.existsSync(POSTS_DIR)) return []
   return fs
     .readdirSync(POSTS_DIR)

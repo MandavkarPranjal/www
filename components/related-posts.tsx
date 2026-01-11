@@ -21,15 +21,15 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
                             className="group block text-foreground hover:underline underline-offset-4"
                         >
                             <h3 className="font-medium">{frontmatter.title}</h3>
-                            <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                                {frontmatter.date && (
-                                    <span>{new Date(frontmatter.date).toLocaleDateString()}</span>
-                                )}
-                                {readingTime && (
-                                    <span>{readingTime} min read</span>
-                                )}
-                            </div>
                         </Link>
+                        <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                            {frontmatter.date && (
+                                <span>{new Date(frontmatter.date).toLocaleDateString()}</span>
+                            )}
+                            {readingTime && (
+                                <span>{readingTime} min read</span>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>

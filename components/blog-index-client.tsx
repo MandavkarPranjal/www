@@ -88,7 +88,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
             {/* Mobile Floating Search Button */}
             <button
                 onClick={() => setIsMobileSearchOpen(true)}
-                className="md:hidden fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-foreground text-background shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
+                className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 h-14 w-14 rounded-full bg-foreground text-background shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
                 aria-label="Open search"
             >
                 <IconSearch className="h-6 w-6" />

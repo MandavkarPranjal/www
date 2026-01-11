@@ -24,66 +24,68 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
     })
 
     return (
-        <ViewTransition>
-            <main className="min-h-screen px-6 py-16 md:py-24 pb-24 md:pb-24">
-                <div className="mx-auto max-w-2xl">
-                    <h1 className="mb-8 text-4xl font-serif font-medium tracking-tight text-foreground">
-                        Blog
-                    </h1>
-                    
-                    {/* Desktop Search Bar */}
-                    <div className="hidden mb-8 md:block">
-                        <div className="relative">
-                            <IconSearch className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                className="w-full border-0 border-b border-border bg-transparent pl-6 pr-6 py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus:ring-0"
-                            />
+        <>
+            <ViewTransition>
+                <main className="min-h-screen px-6 py-16 md:py-24 pb-24 md:pb-24">
+                    <div className="mx-auto max-w-2xl">
+                        <h1 className="mb-8 text-4xl font-serif font-medium tracking-tight text-foreground">
+                            Blog
+                        </h1>
+                        
+                        {/* Desktop Search Bar */}
+                        <div className="hidden mb-8 md:block">
+                            <div className="relative">
+                                <IconSearch className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    className="w-full border-0 border-b border-border bg-transparent pl-6 pr-6 py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus:ring-0"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Posts List */}
-                    <ul className="space-y-6">
-                        {filteredPosts.map(({ slug, frontmatter, readingTime }) => (
-                            <li key={slug} className="group">
-                                <Link
-                                    href={`/blog/${slug}`}
-                                    className="block text-foreground"
-                                >
-                                    <ViewTransition name={`title-${slug}`}>
-                                        <h2 className="text-xl font-medium group-hover:underline underline-offset-4">
-                                            {frontmatter.title || slug}
-                                        </h2>
-                                    </ViewTransition>
-                                    {frontmatter.description && (
-                                        <p className="mt-1 text-muted-foreground">
-                                            {frontmatter.description}
-                                        </p>
-                                    )}
-                                    <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-                                        {frontmatter.date && (
-                                            <ViewTransition name={`date-${slug}`}>
-                                                <span>
-                                                    {new Date(frontmatter.date).toLocaleDateString()}
-                                                </span>
-                                            </ViewTransition>
+                        {/* Posts List */}
+                        <ul className="space-y-6">
+                            {filteredPosts.map(({ slug, frontmatter, readingTime }) => (
+                                <li key={slug} className="group">
+                                    <Link
+                                        href={`/blog/${slug}`}
+                                        className="block text-foreground"
+                                    >
+                                        <ViewTransition name={`title-${slug}`}>
+                                            <h2 className="text-xl font-medium group-hover:underline underline-offset-4">
+                                                {frontmatter.title || slug}
+                                            </h2>
+                                        </ViewTransition>
+                                        {frontmatter.description && (
+                                            <p className="mt-1 text-muted-foreground">
+                                                {frontmatter.description}
+                                            </p>
                                         )}
-                                        {readingTime && (
-                                            <span>{readingTime} min read</span>
-                                        )}
-                                    </div>
-                                </Link>
-                            </li>
-                        ))}
-                        {filteredPosts.length === 0 && (
-                            <li className="text-muted-foreground">No posts found.</li>
-                        )}
-                    </ul>
-                </div>
-            </main>
+                                        <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                                            {frontmatter.date && (
+                                                <ViewTransition name={`date-${slug}`}>
+                                                    <span>
+                                                        {new Date(frontmatter.date).toLocaleDateString()}
+                                                    </span>
+                                                </ViewTransition>
+                                            )}
+                                            {readingTime && (
+                                                <span>{readingTime} min read</span>
+                                            )}
+                                        </div>
+                                    </Link>
+                                </li>
+                            ))}
+                            {filteredPosts.length === 0 && (
+                                <li className="text-muted-foreground">No posts found.</li>
+                            )}
+                        </ul>
+                    </div>
+                </main>
+            </ViewTransition>
 
             {/* Mobile Floating Search Button */}
             <button
@@ -102,6 +104,6 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                 onQueryChange={setQuery}
                 resultCount={filteredPosts.length}
             />
-        </ViewTransition>
+        </>
     )
 }

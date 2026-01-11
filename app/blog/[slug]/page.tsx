@@ -120,9 +120,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     return (
         <>
             <ReadingProgress />
-            <ViewTransition>
-                <main className="min-h-screen px-6 py-16 md:py-24">
-                    <article className="mx-auto max-w-2xl">
+            <main className="min-h-screen px-6 py-16 md:py-24">
+                <article className="mx-auto max-w-2xl">
                     <ViewTransition name={`title-${slug}`}>
                         <h1 className="mb-4 text-4xl font-serif font-medium tracking-tight text-foreground">
                             {frontmatter.title}
@@ -141,9 +140,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     </div>
                     <ShareButtons url={`/blog/${slug}`} title={frontmatter.title} description={frontmatter.description} />
                     <RelatedPosts posts={relatedPosts} />
-                    </article>
-                </main>
-            </ViewTransition>
-            </>
+                </article>
+            </main>
+        </>
     )
 }

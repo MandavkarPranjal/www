@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ViewTransition } from 'react'
 import type { PostWithMeta } from '@/lib/blog'
 
 interface RelatedPostsProps {
@@ -20,11 +21,15 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
                             href={`/blog/${slug}`}
                             className="group block text-foreground hover:underline underline-offset-4"
                         >
-                            <h3 className="font-medium">{frontmatter.title}</h3>
+                            <ViewTransition name={`title-${slug}`}>
+                                <h3 className="font-medium">{frontmatter.title}</h3>
+                            </ViewTransition>
                         </Link>
                         <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                             {frontmatter.date && (
-                                <span>{new Date(frontmatter.date).toLocaleDateString()}</span>
+                                <ViewTransition name={`date-${slug}`}>
+                                    <span>{new Date(frontmatter.date).toLocaleDateString()}</span>
+                                </ViewTransition>
                             )}
                             {readingTime && (
                                 <span>{readingTime} min read</span>

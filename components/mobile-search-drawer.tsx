@@ -33,16 +33,6 @@ export function MobileSearchDrawer({ isOpen, onClose, query, onQueryChange, resu
             />
             <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
                 <div className="bg-background border-t border-border p-6 animate-in slide-in-from-bottom duration-200">
-                    <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-lg font-medium">Search</h2>
-                        <button
-                            onClick={onClose}
-                            className="text-muted-foreground hover:text-foreground"
-                            aria-label="Close search"
-                        >
-                            <IconX className="h-5 w-5" />
-                        </button>
-                    </div>
                     <div className="relative">
                         <IconSearch className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <input

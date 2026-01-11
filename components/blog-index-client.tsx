@@ -36,7 +36,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                     {/* Search Bar */}
                     <div className="mb-8">
                         <div className="relative">
-                            <IconSearch className="absolute left-0 top-1.5 h-4 w-4 text-muted-foreground" />
+                            <IconSearch className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <input
                                 type="text"
                                 placeholder="Search..."

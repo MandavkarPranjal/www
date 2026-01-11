@@ -16,6 +16,13 @@ export type Post = {
   frontmatter: PostFrontmatter
 }
 
+export type PostWithMeta = {
+  slug: string
+  frontmatter: PostFrontmatter
+  content: string
+  readingTime: number
+}
+
 const POSTS_DIR = path.join(process.cwd(), "content", "blog")
 
 export function getPostSlugs(): string[] {
@@ -45,13 +52,53 @@ export function getPostBySlug(slug: string): Post | null {
   }
 }
 
-export function getAllPosts(): Array<{ slug: string; frontmatter: PostFrontmatter }> {
-  const items = getPostSlugs()
-    .map((slug) => {
-      const post = getPostBySlug(slug)
-      return post ? { slug: post.slug, frontmatter: post.frontmatter } : null
+export function calculateReadingTime(content: string): number {
+  const wordCount = content.split(/\s+/).filter((word) => word.length > 0).length
+  return Math.max(1, Math.ceil(wordCount / 200))
+}
+
+export function getRelatedPosts(currentSlug: string, allPosts: PostWithMeta[], limit: number = 3): PostWithMeta[] {
+  const currentPost = allPosts.find(p => p.slug === currentSlug)
+  if (!currentPost) return []
+
+  const currentTags = currentPost.frontmatter.tags || []
+  
+  const related = allPosts
+    .filter(p => p.slug !== currentSlug)
+    .map(post => {
+      const postTags = post.frontmatter.tags || []
+      const commonTags = currentTags.filter(tag => postTags.includes(tag)).length
+      return { post, relevance: commonTags }
     })
-    .filter((p): p is { slug: string; frontmatter: PostFrontmatter } => Boolean(p))
+    .sort((a, b) => b.relevance - a.relevance)
+    .slice(0, limit)
+    .map(({ post }) => post)
+
+  // If not enough related posts by tags, fill with recent posts
+  if (related.length < limit) {
+    const recentPosts = allPosts
+      .filter(p => p.slug !== currentSlug && !related.find(r => r.slug === p.slug))
+      .slice(0, limit - related.length)
+    related.push(...recentPosts)
+  }
+
+  return related
+}
+
+export function getAllPosts(): PostWithMeta[] {
+  const items = getPostSlugs()
+    .map((slug): PostWithMeta | null => {
+      const post = getPostBySlug(slug)
+      if (!post) return null
+      const readingTime = calculateReadingTime(post.content)
+      return {
+        slug: post.slug,
+        frontmatter: post.frontmatter,
+        content: post.content,
+        readingTime,
+      }
+    })
+    .filter((p): p is PostWithMeta => p !== null)
     .filter((p) => p.frontmatter?.published !== false)
 
   return items.sort((a, b) => {

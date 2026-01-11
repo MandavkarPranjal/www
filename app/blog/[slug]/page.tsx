@@ -3,8 +3,11 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
-import { getAllPosts, getPostBySlug } from "@/lib/blog"
+import { getAllPosts, getPostBySlug, getRelatedPosts, calculateReadingTime } from "@/lib/blog"
 import { mdxComponents, CodeBlock } from "@prose-ui/next"
+import { RelatedPosts } from "@/components/related-posts"
+import { ShareButtons } from "@/components/share-buttons"
+import { ReadingProgress } from "@/components/reading-progress"
 import type React from "react"
 import type { BundledLanguage } from "shiki"
 
@@ -108,13 +111,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         .replace(/^(\s*)- \[x\] (.+)$/gm, '$1- <s className="italic text-muted-foreground">$2</s>')
         .replace(/^(\s*)- \[ \] (.+)$/gm, '$1- $2')
 
-    const wordCount = processedContent.split(/\s+/).filter((word) => word.length > 0).length
-    const readingTime = Math.max(1, Math.ceil(wordCount / 200))
+    const readingTime = calculateReadingTime(processedContent)
+    
+    // Get related posts
+    const allPosts = getAllPosts()
+    const relatedPosts = getRelatedPosts(slug, allPosts, 3)
 
     return (
-        <ViewTransition>
-            <main className="min-h-screen px-6 py-16 md:py-24">
-                <article className="mx-auto max-w-2xl">
+        <>
+            <ReadingProgress />
+            <ViewTransition>
+                <main className="min-h-screen px-6 py-16 md:py-24">
+                    <article className="mx-auto max-w-2xl">
                     <ViewTransition name={`title-${slug}`}>
                         <h1 className="mb-4 text-4xl font-serif font-medium tracking-tight text-foreground">
                             {frontmatter.title}
@@ -131,8 +139,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     <div className="prose-ui">
                         <MDXRemote source={processedContent} components={components as any} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
                     </div>
-                </article>
-            </main>
-        </ViewTransition>
+                    <ShareButtons url={`/blog/${slug}`} title={frontmatter.title} description={frontmatter.description} />
+                    <RelatedPosts posts={relatedPosts} />
+                    </article>
+                </main>
+            </ViewTransition>
+            </>
     )
 }

@@ -11,6 +11,20 @@ interface BlogIndexClientProps {
     posts: PostWithMeta[]
 }
 
+function formatDate(dateString: string): string {
+    const date = new Date(dateString)
+    const currentYear = new Date().getFullYear()
+    const day = date.getDate()
+    const month = date.toLocaleDateString('en-US', { month: 'short' })
+    const year = date.getFullYear()
+
+    if (year === currentYear) {
+        return `${day} ${month}`
+    }
+    return `${day} ${month} ${year}`
+}
+
+
 export function BlogIndexClient({ posts }: BlogIndexClientProps) {
     const [query, setQuery] = useState('')
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
@@ -31,7 +45,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                         <h1 className="mb-8 text-4xl font-serif font-medium tracking-tight text-foreground">
                             Blog
                         </h1>
-                        
+
                         {/* Desktop Search Bar */}
                         <div className="hidden mb-8 md:block">
                             <div className="relative">
@@ -68,7 +82,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                                             {frontmatter.date && (
                                                 <ViewTransition name={`date-${slug}`}>
                                                     <span>
-                                                        {new Date(frontmatter.date).toLocaleDateString()}
+                                                        {formatDate(frontmatter.date)}
                                                     </span>
                                                 </ViewTransition>
                                             )}

@@ -6,6 +6,7 @@ type PostFrontmatter = {
   title: string
   description?: string
   date?: string
+  lastUpdated?: string
   published?: boolean
   tags?: string[]
 }

@@ -112,7 +112,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         .replace(/^(\s*)- \[ \] (.+)$/gm, '$1- $2')
 
     const readingTime = calculateReadingTime(processedContent)
-    
+
     // Get related posts
     const allPosts = getAllPosts()
     const relatedPosts = getRelatedPosts(slug, allPosts, 3)
@@ -131,7 +131,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                         <ViewTransition name={`date-${slug}`}>
                             <p className="mb-8 text-sm text-muted-foreground text-left justify-center">
-                                {formatDate(frontmatter.date)} · {readingTime} min read
+                                {formatDate(frontmatter.date)}
+                                {frontmatter.lastUpdated && frontmatter.lastUpdated !== frontmatter.date && (
+                                    <> · Updated {formatDate(frontmatter.lastUpdated)}{" "}</>
+                                )}
+                                · {readingTime} min read
                             </p>
                         </ViewTransition>
                     )}

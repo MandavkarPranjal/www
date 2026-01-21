@@ -268,6 +268,25 @@ span.spoiler:focus {
 
 /* For touch devices, use click to toggle */
 span.spoiler[data-revealed="true"] {
-   filter: blur(0);
+    filter: blur(0);
 }
+
+/* Blog post image styling */
+.prose-ui img {
+    display: block;
+    width: 150%;
+    height: auto;
+    max-width: none;
+    border-radius: 6px;
+    margin: 2.5rem auto 2.5rem -25%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .prose-ui img {
+        width: 100%;
+        margin: 1.5rem auto;
+    }
+}
+
 

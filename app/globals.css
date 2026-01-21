@@ -242,7 +242,32 @@ body,
 
 /* Override prose-ui container bg to match page */
 .prose-ui {
-  /* Ensure container blends with page background in all themes */
-  background-color: var(--background) !important;
-  background: var(--background) !important;
+   /* Ensure container blends with page background in all themes */
+   background-color: var(--background) !important;
+   background: var(--background) !important;
 }
+
+/* Spoiler styling */
+span.spoiler {
+   cursor: pointer;
+   transition: filter 0.3s ease-in-out;
+   filter: blur(4px);
+   user-select: text;
+   display: inline-block;
+}
+
+span.spoiler:hover {
+   filter: blur(0);
+}
+
+span.spoiler:focus {
+   filter: blur(0);
+   outline: 2px solid var(--ring);
+   outline-offset: 2px;
+}
+
+/* For touch devices, use click to toggle */
+span.spoiler[data-revealed="true"] {
+   filter: blur(0);
+}
+

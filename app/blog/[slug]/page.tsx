@@ -4,7 +4,9 @@ import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import { getAllPosts, getPostBySlug, getRelatedPosts, calculateReadingTime } from "@/lib/blog"
+import { rehypeSpoiler } from "@/lib/remark-spoiler"
 import { mdxComponents, CodeBlock } from "@prose-ui/next"
+import { Spoiler } from "@/components/spoiler"
 import { RelatedPosts } from "@/components/related-posts"
 import { ShareButtons } from "@/components/share-buttons"
 import { ReadingProgress } from "@/components/reading-progress"
@@ -43,6 +45,7 @@ const components = {
     ...mdxComponents,
     pre: Pre,
     input: Input,
+    Spoiler,
 }
 
 export async function generateStaticParams() {
@@ -140,7 +143,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         </ViewTransition>
                     )}
                     <div className="prose-ui">
-                        <MDXRemote source={processedContent} components={components as any} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+                        <MDXRemote source={processedContent} components={components as any} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSpoiler] } }} />
                     </div>
                     <ShareButtons url={`/blog/${slug}`} title={frontmatter.title} description={frontmatter.description} />
                     <RelatedPosts posts={relatedPosts} />

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { IconShare2, IconBrandTwitter, IconBrandLinkedin, IconLink } from '@tabler/icons-react'
+import { IconShare2, IconBrandX, IconBrandLinkedin, IconLink } from '@tabler/icons-react'
 
 interface ShareButtonsProps {
     url: string
@@ -46,7 +46,7 @@ export function ShareButtons({ url, title, description }: ShareButtonsProps) {
                     aria-label="Share on Twitter"
                     title="Share on Twitter"
                 >
-                    <IconBrandTwitter className="h-4 w-4" />
+                    <IconBrandX className="h-4 w-4" />
                 </a>
                 <a
                     href={shareLinks.linkedin}

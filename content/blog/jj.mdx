@@ -1,8 +1,100 @@
 ---
-title: Jujutsu VCs
-description: better VCs than git
-date: 2026-1-16
-published: false
-tags: ['personal']
+title: Jujutsu (jj), a git compatible VCS
+description: better VCS than git
+date: 2026-2-6
+published: true
+tags: ['jj', 'git', 'tech', 'dev', 'version control']
 ---
 
+[Git] is used by most devs around the world, but it's quite common opinion that git still has plenty of rough edges, particularly with regards to the user interface.
+At the same time, there's also a significant barrier for entry of new version control system with all the tooling that's built up around git over the years with tools like [Github], [Gitlab], [GitButler], [gh], [Husky] and many more
+
+[jj] is one of the latest round of git-compatible VCS which allows you to have a better experience locally, without having to abandon everything that depends on git. I've been trying it now for about month or so, and this post shares some of my thoughs.
+
+## Why jj?
+
+jj is compelling because it changes one fundamental assumption that Git is built on: that commits are immutable milestones.
+jj treats work as *mutable* by default.
+
+jj also eliminates the artificial split between “working copy” and “history”. Your current work already *is* a changeset. There’s no dirty state to manage, no stash-first workflow just to switch context. Everything lives in the same model, which makes the system easier to reason about.
+
+Another subtle but powerful feature is the operation log. jj records repository *operations*, not just commits. If you mess up a split, a rebase, or a rewrite, you can roll the entire repo back to an earlier state. It’s effectively undo for version control. That safety net encourages experimentation and removes the anxiety around rewriting history.
+
+Crucially, jj does all of this while remaining Git compatible. Using the Git backend, it works directly on Git repositories. You still push to the same remotes, your teammates still use Git, CI stays untouched. jj improves your local workflow without demanding ecosystem change.
+
+In short, jj doesn’t try to replace Git’s ecosystem—it replaces Git’s mental model. It assumes developers iterate, revise, and change their minds, and it’s built around that reality.
+
+## jj vs git
+
+`jj` supports two backends: a native backend and a Git backend.
+While the native backend is production-ready, in practice most people will use the Git backend because of existing hosting and tooling. In that setup, jj effectively acts as a layer on top of Git.
+
+The biggest conceptual difference is this:
+
+- Git revolves around **commits**.
+- jj revolves around **changesets**.
+
+A changeset has a *stable identity* even when you rewrite it.
+In Git, if you amend a commit, the commit hash changes. Everything downstream must be manually rebased.
+In jj, when you modify a changeset, jj automatically rebases dependent changesets for you, because their identity is independent of their content.
+
+Practically, this means:
+
+- You can amend any change at any time.
+- jj automatically keeps your stack consistent.
+- You don’t need `fixup` + autosquash workflows.
+- History editing feels safe and routine instead of headache.
+
+Think of it as `git commit --amend`, but available everywhere—and without the ceremony.
+
+---
+
+## Working with jj
+
+`jj` has ***bookmark*** instead of *branch*. It's a bit like a branch, but it's not a branch. A bookmark is a mutable pointer to a changeset. You can move it around, and the changeset it points to can be rewritten without changing the bookmark itself.
+
+Any changes and commits you make is detached from **HEAD**, so it like working in **Void** *(a place where there's nothing, an empty place)*. You can have multiple bookmarks, and switch between them without worrying about dirty state. It’s a much more fluid way to work.
+
+You can undo anything you've done with jj, including commands you have run in the past. It's like having a time machine for your repository. If you mess up a rebase, you can just roll back to the state before the rebase. This encourages experimentation and makes it safe to try new things.
+
+Using `jj` for *vibe-coding* is a game-changer. You can quickly iterate on your changes without worrying about the commit history.
+
+`jj` is not designed for *vibe-coding*, but it's a perfect fit for vibe-coding, because how it's easy to experiment with changes. jj encourages you to iterate and revise your work, which is exactly what vibe-coding is about.
+
+`jj` has `jj split` which is like `git` with `-i` interactive flag
+
+---
+
+## The Good
+
+CLI of `jj` is very intuitive and easy to use. It has a clean and modern design, and it’s easy to understand what’s going on.
+
+There is no `stash` in `jj`, which is a good thing. You can just switch to another bookmark and come back to your work later. This eliminates the need for stashing and unstashing, which sometime can be little confusing and can lead to errors.
+
+`jj` has better default *diffs* than `git`*(though I use delta for diffs)*.
+
+## The Bad
+
+`jj` has too many commands, and it can be overwhelming for new users. It take some time to learn all the commands, but just like `git`, you don't learn all the commands at once or at all. You learn commands as you need and from ChatGPT/Claude or other LLMs.
+
+Once you used to `jj`, going back to `git` can be a little bit frustrating, because you have to deal with the limitations of `git`. You have to be more careful with your commits, and you have to deal with the dirty state. Helping a teammate who uses `git` can be a little bit frustrating, because you have to explain the differences between `jj` and `git`, and you have to be careful not to accidentally mess up their workflow.
+
+---
+
+## Final Take
+
+I've been using `jj` for about a month now, and I'm really enjoying it. It's a great way to experiment with version control.
+
+I'm not sure if `jj` will replace `git` in the long run, but it's definitely a great tool to have in your toolkit. If you're looking for a better way to work with version control, I highly recommend giving `jj` a try.
+
+I've also created a script called [fzf-jj.sh](https://github.com/mandavkarpranjal/fzf-jj.sh) to make it easier to use `jj` with fzf. It allows you to quickly switch between bookmarks, changesets, and workspace using fzf, which is a great way to navigate your repository.
+
+Recently, I've watch a [video](https://www.youtube.com/watch?v=Jg8L3SbgZ3o) about [GitButler CLI](https://docs.gitbutler.com/cli-overview) and I think it's similar to how `jj` work. If you don't want to switch your VCS then you should definitely checkout GitButler CLI, which is a layer on top of Git that provides a better user experience without changing the underlying VCS.
+
+[Git]: https://git-scm.com/
+[Github]: https://github.com/
+[Gitlab]: https://gitlab.com/
+[GitButler]: https://gitbutler.com/
+[gh]: https://cli.github.com/
+[Husky]: https://github.com/typicode/husky
+[jj]: https://github.com/jj-vcs/jj

@@ -2,10 +2,11 @@
 
 import { ViewTransition } from 'react'
 import Link from "next/link"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconSearch } from '@tabler/icons-react'
 import { MobileSearchDrawer } from '@/components/mobile-search-drawer'
 import type { PostWithMeta } from '@/lib/blog'
+import { searchPosts } from '@/lib/search'
 
 interface BlogIndexClientProps {
     posts: PostWithMeta[]
@@ -28,14 +29,22 @@ function formatDate(dateString: string): string {
 export function BlogIndexClient({ posts }: BlogIndexClientProps) {
     const [query, setQuery] = useState('')
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
+    const [searchResults, setSearchResults] = useState<PostWithMeta[]>([])
+    const [isSearching, setIsSearching] = useState(false)
 
-    const filteredPosts = posts.filter(({ slug, frontmatter }) => {
-        if (!query.trim()) return true
-        const q = query.toLowerCase()
-        const title = (frontmatter.title || '').toLowerCase()
-        const description = (frontmatter.description || '').toLowerCase()
-        return title.includes(q) || description.includes(q) || slug.includes(q)
-    })
+    useEffect(() => {
+        const doSearch = async () => {
+            setIsSearching(true)
+            const results = await searchPosts(query, posts, 20)
+            setSearchResults(results)
+            setIsSearching(false)
+        }
+        
+        const timeoutId = setTimeout(doSearch, 100)
+        return () => clearTimeout(timeoutId)
+    }, [query, posts])
+
+    const displayedPosts: PostWithMeta[] = query.trim() ? searchResults : posts
 
     return (
         <>
@@ -62,7 +71,11 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
 
                         {/* Posts List */}
                         <ul className="space-y-6">
-                            {filteredPosts.map(({ slug, frontmatter, readingTime }) => (
+                            {displayedPosts.map((post) => {
+                                const slug = post.slug
+                                const frontmatter = post.frontmatter
+                                const readingTime = post.readingTime
+                                return (
                                 <li key={slug} className="group">
                                     <Link
                                         href={`/blog/${slug}`}
@@ -92,8 +105,8 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                                         </div>
                                     </Link>
                                 </li>
-                            ))}
-                            {filteredPosts.length === 0 && (
+                            )})}
+                            {displayedPosts.length === 0 && (
                                 <li className="text-muted-foreground">No posts found.</li>
                             )}
                         </ul>
@@ -116,7 +129,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
                 onClose={() => setIsMobileSearchOpen(false)}
                 query={query}
                 onQueryChange={setQuery}
-                resultCount={filteredPosts.length}
+                resultCount={displayedPosts.length}
             />
         </>
     )

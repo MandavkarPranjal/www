@@ -9,16 +9,43 @@ interface BackButtonProps {
 
 export function BackButton({ className = '' }: BackButtonProps) {
     const pathname = usePathname()
+    const isBlogIndex = pathname === '/blog'
     const isBlogPost = pathname.startsWith('/blog/') && pathname !== '/blog'
+    const isBlogRoute = isBlogIndex || isBlogPost
 
     return (
         <div className={`fixed left-4 top-4 z-50 ${className}`}>
-            {isBlogPost ? (
-                <div style={{ viewTransitionName: 'blog-back' } as React.CSSProperties}>
+            {isBlogRoute ? (
+                <div className="flex items-center gap-2">
+                    {isBlogPost ? (
+                        <div style={{ viewTransitionName: 'blog-back' } as React.CSSProperties}>
+                            <Link
+                                href="/blog"
+                                className="flex items-center font-medium gap-2 rounded-md px-3 py-1 text-sm text-foreground/70 transition-colors duration-200 hover:text-foreground/90"
+                                aria-label="Go to all posts"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="h-4 w-4"
+                                >
+                                    <line x1="19" y1="12" x2="5" y2="12" />
+                                    <polyline points="12 19 5 12 12 5" />
+                                </svg>
+                                All posts
+                            </Link>
+                        </div>
+                    ) : null}
+
                     <Link
-                        href="/blog"
+                        href="/"
                         className="flex items-center font-medium gap-2 rounded-md px-3 py-1 text-sm text-foreground/70 transition-colors duration-200 hover:text-foreground/90"
-                        aria-label="Go to all posts"
+                        aria-label="Go to home"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -30,10 +57,10 @@ export function BackButton({ className = '' }: BackButtonProps) {
                             strokeLinejoin="round"
                             className="h-4 w-4"
                         >
-                            <line x1="19" y1="12" x2="5" y2="12" />
-                            <polyline points="12 19 5 12 12 5" />
+                            <path d="M3 10.5 12 3l9 7.5" />
+                            <path d="M5.5 9.5V21h13V9.5" />
                         </svg>
-                        All posts
+                        Back to home
                     </Link>
                 </div>
             ) : (

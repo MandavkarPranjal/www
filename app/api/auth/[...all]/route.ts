@@ -1,5 +1,22 @@
-import { toNextJsHandler } from "better-auth/next-js"
+import type { NextRequest } from "next/server"
 
-import { auth } from "@/lib/auth"
+export const runtime = "nodejs"
 
-export const { GET, POST } = toNextJsHandler(auth)
+async function getAuthHandlers() {
+  const [{ toNextJsHandler }, { auth }] = await Promise.all([
+    import("better-auth/next-js"),
+    import("@/lib/auth"),
+  ])
+
+  return toNextJsHandler(auth)
+}
+
+export async function GET(request: NextRequest) {
+  const { GET: handler } = await getAuthHandlers()
+  return handler(request)
+}
+
+export async function POST(request: NextRequest) {
+  const { POST: handler } = await getAuthHandlers()
+  return handler(request)
+}

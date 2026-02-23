@@ -1,11 +1,12 @@
 import Link from "next/link"
 
-import { getEntries } from "@/lib/entries"
+import { type EntriesCursor, getEntries } from "@/lib/entries"
 import { EntryBody } from "@/app/entries/entry-body"
+import { EntriesSearch } from "@/app/entries/entries-search"
 import { LocalTime } from "@/app/entries/local-time"
 
 type EntriesPageProps = {
-  searchParams: Promise<{ cursor?: string }>
+  searchParams: Promise<{ cursor?: string; q?: string }>
 }
 
 type Entry = {
@@ -17,17 +18,33 @@ type Entry = {
 
 export const dynamic = "force-dynamic"
 
-function getCursorDate(cursor?: string) {
+function getCursor(cursor?: string): EntriesCursor | undefined {
   if (!cursor) {
     return undefined
   }
 
-  const date = new Date(cursor)
+  const separatorIndex = cursor.lastIndexOf("__")
+
+  if (separatorIndex <= 0 || separatorIndex === cursor.length - 2) {
+    return undefined
+  }
+
+  const createdAtText = cursor.slice(0, separatorIndex)
+  const id = cursor.slice(separatorIndex + 2)
+  const date = new Date(createdAtText)
+
   if (Number.isNaN(date.getTime())) {
     return undefined
   }
 
-  return date
+  return {
+    createdAt: date,
+    id,
+  }
+}
+
+function toCursor(entry: Entry) {
+  return `${entry.createdAt.toISOString()}__${entry.id}`
 }
 
 function getDayKey(date: Date) {
@@ -53,12 +70,13 @@ function groupEntriesByDay(entries: Entry[]) {
 }
 
 export default async function EntriesPage({ searchParams }: EntriesPageProps) {
-  const { cursor } = await searchParams
-  const entries = await getEntries(getCursorDate(cursor))
+  const { cursor, q } = await searchParams
+  const query = q?.trim() ?? ""
+  const entries = await getEntries(getCursor(cursor), query)
   const entryGroups = groupEntriesByDay(entries)
   const hasNextPage = entries.length === 50
   const nextCursor = hasNextPage
-    ? entries[entries.length - 1]?.createdAt.toISOString()
+    ? toCursor(entries[entries.length - 1])
     : null
 
   return (
@@ -67,10 +85,17 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
         <header className="mb-8">
           <h1 className="text-4xl font-serif font-medium tracking-tight text-foreground">Entries</h1>
           <p className="mt-2 text-muted-foreground">Short notes, ordered by most recent first.</p>
+          <EntriesSearch
+            id="entries-search"
+            label="Search entries"
+            placeholder="Search body or tags"
+          />
         </header>
 
         {entries.length === 0 ? (
-          <p className="text-muted-foreground italic">No entries yet.</p>
+          <p className="text-muted-foreground italic">
+            {query ? "No entries matched your search." : "No entries yet."}
+          </p>
         ) : (
           <ul className="space-y-6">
             {entryGroups.map((group) => {
@@ -122,7 +147,7 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
           <div className="mt-8">
             <Link
               className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors"
-              href={`/entries?cursor=${encodeURIComponent(nextCursor)}`}
+              href={`/entries?cursor=${encodeURIComponent(nextCursor)}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
             >
               Load older entries
             </Link>

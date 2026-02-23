@@ -61,6 +61,7 @@
     "next-mdx-remote": "^6.0.0",
     "next-plausible": "^3.12.5",
     "next-themes": "latest",
+    "nuqs": "^2.8.8",
     "prose-ui.css": "link:@prose-ui/next/prose-ui.css",
     "react": "19.2.1",
     "react-day-picker": "9.8.0",

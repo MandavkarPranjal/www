@@ -13,8 +13,11 @@ model Entry {
   body      String
   tags      String[]
   createdAt DateTime @default(now())
+  searchVector Unsupported("tsvector")?
 
   @@index([createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([tags], type: Gin)
 }
 
 model User {

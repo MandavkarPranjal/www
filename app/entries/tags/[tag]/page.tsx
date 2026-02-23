@@ -1,12 +1,13 @@
 import Link from "next/link"
 
 import { EntryBody } from "@/app/entries/entry-body"
+import { EntriesSearch } from "@/app/entries/entries-search"
 import { LocalTime } from "@/app/entries/local-time"
-import { PAGE_SIZE, getEntriesByTag } from "@/lib/entries"
+import { PAGE_SIZE, type EntriesCursor, getEntriesByTag } from "@/lib/entries"
 
 type TagPageProps = {
   params: Promise<{ tag: string }>
-  searchParams: Promise<{ cursor?: string }>
+  searchParams: Promise<{ cursor?: string; q?: string }>
 }
 
 type Entry = {
@@ -18,17 +19,33 @@ type Entry = {
 
 export const dynamic = "force-dynamic"
 
-function getCursorDate(cursor?: string) {
+function getCursor(cursor?: string): EntriesCursor | undefined {
   if (!cursor) {
     return undefined
   }
 
-  const date = new Date(cursor)
+  const separatorIndex = cursor.lastIndexOf("__")
+
+  if (separatorIndex <= 0 || separatorIndex === cursor.length - 2) {
+    return undefined
+  }
+
+  const createdAtText = cursor.slice(0, separatorIndex)
+  const id = cursor.slice(separatorIndex + 2)
+  const date = new Date(createdAtText)
+
   if (Number.isNaN(date.getTime())) {
     return undefined
   }
 
-  return date
+  return {
+    createdAt: date,
+    id,
+  }
+}
+
+function toCursor(entry: Entry) {
+  return `${entry.createdAt.toISOString()}__${entry.id}`
 }
 
 function getDayKey(date: Date) {
@@ -55,14 +72,15 @@ function groupEntriesByDay(entries: Entry[]) {
 
 export default async function EntriesByTagPage({ params, searchParams }: TagPageProps) {
   const { tag: rawTag } = await params
-  const { cursor } = await searchParams
+  const { cursor, q } = await searchParams
   const tag = decodeURIComponent(rawTag)
+  const query = q?.trim() ?? ""
 
-  const entries = await getEntriesByTag(tag, getCursorDate(cursor))
+  const entries = await getEntriesByTag(tag, getCursor(cursor), query)
   const entryGroups = groupEntriesByDay(entries)
   const hasNextPage = entries.length === PAGE_SIZE
   const nextCursor = hasNextPage
-    ? entries[entries.length - 1]?.createdAt.toISOString()
+    ? toCursor(entries[entries.length - 1])
     : null
 
   return (
@@ -73,10 +91,17 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
           <p className="mt-2 text-muted-foreground">
             Tagged entries. <Link className="underline underline-offset-4" href="/entries">Back to all entries</Link>
           </p>
+          <EntriesSearch
+            id="tag-entries-search"
+            label="Search tagged entries"
+            placeholder="Search body or tags"
+          />
         </header>
 
         {entries.length === 0 ? (
-          <p className="text-muted-foreground italic">No entries found for this tag.</p>
+          <p className="text-muted-foreground italic">
+            {query ? "No tagged entries matched your search." : "No entries found for this tag."}
+          </p>
         ) : (
           <ul className="space-y-6">
             {entryGroups.map((group) => {
@@ -128,7 +153,7 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
           <div className="mt-8">
             <Link
               className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors"
-              href={`/entries/tags/${encodeURIComponent(tag)}?cursor=${encodeURIComponent(nextCursor)}`}
+              href={`/entries/tags/${encodeURIComponent(tag)}?cursor=${encodeURIComponent(nextCursor)}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
             >
               Load older entries
             </Link>

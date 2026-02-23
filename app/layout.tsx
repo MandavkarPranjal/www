@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import PlausibleProvider from "next-plausible"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import "./globals.css"
 import "@prose-ui/next/prose-ui.css"
@@ -50,10 +51,12 @@ export default function RootLayout({
                 <PlausibleProvider domain="pr5.dev" />
             </head>
             <body className={`font-sans antialiased`}>
-                <div className="fixed right-4 top-4 z-50">
-                    <ThemeSwitch />
-                </div>
-                {children}
+                <NuqsAdapter>
+                    <div className="fixed right-4 top-4 z-50">
+                        <ThemeSwitch />
+                    </div>
+                    {children}
+                </NuqsAdapter>
             </body>
         </html>
     )

@@ -9,6 +9,13 @@ type TagPageProps = {
   searchParams: Promise<{ cursor?: string }>
 }
 
+type Entry = {
+  id: string
+  body: string
+  createdAt: Date
+  tags: string[]
+}
+
 export const dynamic = "force-dynamic"
 
 function getCursorDate(cursor?: string) {
@@ -24,12 +31,35 @@ function getCursorDate(cursor?: string) {
   return date
 }
 
+function getDayKey(date: Date) {
+  return date.toISOString().slice(0, 10)
+}
+
+function groupEntriesByDay(entries: Entry[]) {
+  const groups: Array<{ dayKey: string; entries: Entry[] }> = []
+
+  for (const entry of entries) {
+    const dayKey = getDayKey(entry.createdAt)
+    const currentGroup = groups[groups.length - 1]
+
+    if (!currentGroup || currentGroup.dayKey !== dayKey) {
+      groups.push({ dayKey, entries: [entry] })
+      continue
+    }
+
+    currentGroup.entries.push(entry)
+  }
+
+  return groups
+}
+
 export default async function EntriesByTagPage({ params, searchParams }: TagPageProps) {
   const { tag: rawTag } = await params
   const { cursor } = await searchParams
   const tag = decodeURIComponent(rawTag)
 
   const entries = await getEntriesByTag(tag, getCursorDate(cursor))
+  const entryGroups = groupEntriesByDay(entries)
   const hasNextPage = entries.length === PAGE_SIZE
   const nextCursor = hasNextPage
     ? entries[entries.length - 1]?.createdAt.toISOString()
@@ -49,34 +79,48 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
           <p className="text-muted-foreground italic">No entries found for this tag.</p>
         ) : (
           <ul className="space-y-6">
-            {entries.map((entry: { id: string; body: string; createdAt: Date; tags: string[] }) => (
-              <li key={entry.id} id={`entry-${entry.id}`} className="group scroll-mt-24">
+            {entryGroups.map((group) => {
+              const anchorEntry = group.entries[0]
+
+              return (
+                <li key={group.dayKey} className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <LocalTime iso={entry.createdAt.toISOString()} />
+                    <LocalTime iso={anchorEntry.createdAt.toISOString()} />
                   <Link
                     className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                    href={`/entries/${entry.id}`}
+                      href={`/entries/${anchorEntry.id}`}
                   >
                     #
                   </Link>
                 </div>
-                <EntryBody body={entry.body} />
-                {entry.tags.length > 0 ? (
-                  <ul className="mt-2 flex flex-wrap gap-2">
-                    {entry.tags.map((entryTag) => (
-                      <li key={entryTag}>
-                        <Link
-                          className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                          href={`/entries/tags/${encodeURIComponent(entryTag)}`}
-                        >
-                          #{entryTag}
-                        </Link>
+                  <ul className="space-y-4">
+                    {group.entries.map((entry) => (
+                      <li
+                        key={entry.id}
+                        id={`entry-${entry.id}`}
+                        className="group scroll-mt-24 border-l border-border/70 pl-4"
+                      >
+                        <EntryBody body={entry.body} />
+                        {entry.tags.length > 0 ? (
+                          <ul className="mt-2 flex flex-wrap gap-2">
+                            {entry.tags.map((entryTag) => (
+                              <li key={entryTag}>
+                                <Link
+                                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                                  href={`/entries/tags/${encodeURIComponent(entryTag)}`}
+                                >
+                                  #{entryTag}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
-                ) : null}
-              </li>
-            ))}
+                </li>
+              )
+            })}
           </ul>
         )}
 

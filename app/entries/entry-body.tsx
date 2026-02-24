@@ -3,11 +3,57 @@ import type { ReactNode } from "react"
 
 const URL_REGEX = /https?:\/\/[^\s)]+/g
 const MARKDOWN_LINK_REGEX = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
+const INLINE_QUOTE_REGEX = /"([^"\n]+)"/g
+
+function pushRenderedText(nodes: ReactNode[], rendered: ReactNode | ReactNode[]) {
+  if (Array.isArray(rendered)) {
+    nodes.push(...rendered)
+    return
+  }
+
+  nodes.push(rendered)
+}
+
+function renderQuotedText(text: string, keyPrefix: string) {
+  const matches = Array.from(text.matchAll(INLINE_QUOTE_REGEX))
+  if (matches.length === 0) {
+    return text
+  }
+
+  const nodes: ReactNode[] = []
+  let lastIndex = 0
+
+  matches.forEach((match, index) => {
+    const fullMatch = match[0]
+    const quotedText = match[1]
+    const start = match.index ?? 0
+
+    if (start > lastIndex) {
+      nodes.push(text.slice(lastIndex, start))
+    }
+
+    nodes.push(
+      <span key={`${keyPrefix}-quote-${index}`} className="font-serif italic text-muted-foreground">
+        {fullMatch[0]}
+        {quotedText}
+        {fullMatch[fullMatch.length - 1]}
+      </span>,
+    )
+
+    lastIndex = start + fullMatch.length
+  })
+
+  if (lastIndex < text.length) {
+    nodes.push(text.slice(lastIndex))
+  }
+
+  return nodes
+}
 
 function renderAutoLinks(text: string, keyPrefix: string) {
   const matches = Array.from(text.matchAll(URL_REGEX))
   if (matches.length === 0) {
-    return text
+    return renderQuotedText(text, `${keyPrefix}-plain`)
   }
 
   const nodes: ReactNode[] = []
@@ -18,7 +64,7 @@ function renderAutoLinks(text: string, keyPrefix: string) {
     const start = match.index ?? 0
 
     if (start > lastIndex) {
-      nodes.push(text.slice(lastIndex, start))
+      pushRenderedText(nodes, renderQuotedText(text.slice(lastIndex, start), `${keyPrefix}-before-${index}`))
     }
 
     nodes.push(
@@ -37,7 +83,7 @@ function renderAutoLinks(text: string, keyPrefix: string) {
   })
 
   if (lastIndex < text.length) {
-    nodes.push(text.slice(lastIndex))
+    pushRenderedText(nodes, renderQuotedText(text.slice(lastIndex), `${keyPrefix}-tail`))
   }
 
   return nodes

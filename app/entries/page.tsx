@@ -145,7 +145,7 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
                       <li
                         key={entry.id}
                         id={`entry-${entry.id}`}
-                        className="group scroll-mt-24 border-l border-border/70 pl-4"
+                        className="group scroll-mt-24 border-l-2 border-accent/75 pl-4"
                       >
                         <EntryBody body={entry.body} />
                         <div className="mt-2 flex items-start gap-2">

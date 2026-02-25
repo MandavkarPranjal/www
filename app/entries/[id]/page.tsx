@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -11,6 +12,52 @@ type EntryPermalinkPageProps = {
 }
 
 export const dynamic = "force-dynamic"
+
+function getEntryDescription(body: string) {
+  const normalizedBody = body.replace(/\s+/g, " ").trim()
+
+  if (normalizedBody.length <= 160) {
+    return normalizedBody
+  }
+
+  return `${normalizedBody.slice(0, 157)}...`
+}
+
+export async function generateMetadata({ params }: EntryPermalinkPageProps): Promise<Metadata> {
+  const { id } = await params
+  const entry = await getEntryById(id)
+
+  if (!entry) {
+    return {}
+  }
+
+  const description = getEntryDescription(entry.body)
+
+  return {
+    title: "Entry",
+    description,
+    openGraph: {
+      title: "Entry",
+      description,
+      url: `https://pr5.dev/entries/${entry.id}`,
+      type: "article",
+      images: [
+        {
+          url: `/entries/${entry.id}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: "Entry - pr5.dev",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Entry",
+      description,
+      images: [`/entries/${entry.id}/twitter-image`],
+    },
+  }
+}
 
 export default async function EntryPermalinkPage({ params }: EntryPermalinkPageProps) {
   const { id } = await params

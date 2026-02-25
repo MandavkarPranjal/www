@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import { EntryBody } from "@/app/entries/entry-body"
@@ -18,6 +19,39 @@ type Entry = {
 }
 
 export const dynamic = "force-dynamic"
+
+export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }): Promise<Metadata> {
+  const { tag: rawTag } = await params
+  const tag = decodeURIComponent(rawTag)
+  const title = `#${tag}`
+  const description = `Entries tagged with #${tag}.`
+  const encodedTag = encodeURIComponent(tag)
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://pr5.dev/entries/tags/${encodedTag}`,
+      type: "website",
+      images: [
+        {
+          url: `/entries/tags/${encodedTag}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${title} - pr5.dev`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`/entries/tags/${encodedTag}/twitter-image`],
+    },
+  }
+}
 
 function getCursor(cursor?: string): EntriesCursor | undefined {
   if (!cursor) {
@@ -111,12 +145,6 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
                 <li key={group.dayKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <LocalTime iso={anchorEntry.createdAt.toISOString()} format="date" />
-                    <Link
-                      className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                      href={`/entries/${anchorEntry.id}`}
-                    >
-                      #
-                    </Link>
                   </div>
                   <ul className="space-y-4">
                     {group.entries.map((entry) => (
@@ -141,8 +169,14 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
                               ))}
                             </ul>
                           ) : null}
-                          <div className="ml-auto">
+                          <div className="ml-auto flex items-center gap-2">
                             <LocalTime iso={entry.createdAt.toISOString()} format="time" />
+                            <Link
+                              className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                              href={`/entries/${entry.id}`}
+                            >
+                              #
+                            </Link>
                           </div>
                         </div>
                       </li>

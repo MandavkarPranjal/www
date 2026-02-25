@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { EntryBody } from "@/app/entries/entry-body"
 import { LocalTime } from "@/app/entries/local-time"
+import { ShareButtons } from "@/components/share-buttons"
 import { getEntryById } from "@/lib/entries"
 
 type EntryPermalinkPageProps = {
@@ -34,12 +35,6 @@ export default async function EntryPermalinkPage({ params }: EntryPermalinkPageP
         <article className="space-y-2">
           <div className="flex items-center gap-2">
             <LocalTime iso={entry.createdAt.toISOString()} />
-            <Link
-              className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-              href={`/entries/${entry.id}`}
-            >
-              #
-            </Link>
           </div>
           <EntryBody body={entry.body} />
           {entry.tags.length > 0 ? (
@@ -56,6 +51,7 @@ export default async function EntryPermalinkPage({ params }: EntryPermalinkPageP
               ))}
             </ul>
           ) : null}
+          <ShareButtons url={`/entries/${entry.id}`} title="Entry" />
         </article>
       </div>
     </main>

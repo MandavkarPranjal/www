@@ -133,12 +133,6 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
                 <li key={group.dayKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <LocalTime iso={anchorEntry.createdAt.toISOString()} format="date" />
-                    <Link
-                      className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                      href={`/entries/${anchorEntry.id}`}
-                    >
-                      #
-                    </Link>
                   </div>
                   <ul className="space-y-4">
                     {group.entries.map((entry) => (
@@ -163,8 +157,14 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
                               ))}
                             </ul>
                           ) : null}
-                          <div className="ml-auto">
+                          <div className="ml-auto flex items-center gap-2">
                             <LocalTime iso={entry.createdAt.toISOString()} format="time" />
+                            <Link
+                              className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                              href={`/entries/${entry.id}`}
+                            >
+                              #
+                            </Link>
                           </div>
                         </div>
                       </li>

@@ -23,7 +23,10 @@ function getFormatOptions(format: NonNullable<LocalTimeProps["format"]>): Intl.D
 }
 
 export function LocalTime({ iso, format = "dateTime" }: LocalTimeProps) {
-  const [formatted, setFormatted] = useState(iso)
+  const [formatted, setFormatted] = useState(() => {
+    const date = new Date(iso)
+    return new Intl.DateTimeFormat(undefined, getFormatOptions(format)).format(date)
+  })
 
   useEffect(() => {
     const date = new Date(iso)

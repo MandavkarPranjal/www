@@ -109,15 +109,15 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
 
               return (
                 <li key={group.dayKey} className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <LocalTime iso={anchorEntry.createdAt.toISOString()} />
-                  <Link
-                    className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                  <div className="flex items-center gap-2">
+                    <LocalTime iso={anchorEntry.createdAt.toISOString()} format="date" />
+                    <Link
+                      className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
                       href={`/entries/${anchorEntry.id}`}
-                  >
-                    #
-                  </Link>
-                </div>
+                    >
+                      #
+                    </Link>
+                  </div>
                   <ul className="space-y-4">
                     {group.entries.map((entry) => (
                       <li
@@ -126,20 +126,25 @@ export default async function EntriesByTagPage({ params, searchParams }: TagPage
                         className="group scroll-mt-24 border-l border-border/70 pl-4"
                       >
                         <EntryBody body={entry.body} />
-                        {entry.tags.length > 0 ? (
-                          <ul className="mt-2 flex flex-wrap gap-2">
-                            {entry.tags.map((entryTag) => (
-                              <li key={entryTag}>
-                                <Link
-                                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                                  href={`/entries/tags/${encodeURIComponent(entryTag)}`}
-                                >
-                                  #{entryTag}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : null}
+                        <div className="mt-2 flex items-start gap-2">
+                          {entry.tags.length > 0 ? (
+                            <ul className="flex flex-wrap gap-2">
+                              {entry.tags.map((entryTag) => (
+                                <li key={entryTag}>
+                                  <Link
+                                    className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                                    href={`/entries/tags/${encodeURIComponent(entryTag)}`}
+                                  >
+                                    #{entryTag}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null}
+                          <div className="ml-auto">
+                            <LocalTime iso={entry.createdAt.toISOString()} format="time" />
+                          </div>
+                        </div>
                       </li>
                     ))}
                   </ul>

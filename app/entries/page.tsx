@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import { type EntriesCursor, getEntries } from "@/lib/entries"
@@ -17,6 +18,33 @@ type Entry = {
 }
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Entries",
+  description: "Short notes, ordered by most recent first.",
+  openGraph: {
+    title: "Entries",
+    description: "Short notes, ordered by most recent first.",
+    url: "https://pr5.dev/entries",
+    siteName: "Pranjal Mandavkar",
+    images: [
+      {
+        url: "/entries/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Entries - pr5.dev",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Entries",
+    description: "Short notes, ordered by most recent first.",
+    images: ["/entries/opengraph-image"],
+  },
+}
 
 function getCursor(cursor?: string): EntriesCursor | undefined {
   if (!cursor) {
@@ -103,15 +131,15 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
 
               return (
                 <li key={group.dayKey} className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <LocalTime iso={anchorEntry.createdAt.toISOString()} />
-                  <Link
-                    className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                  <div className="flex items-center gap-2">
+                    <LocalTime iso={anchorEntry.createdAt.toISOString()} format="date" />
+                    <Link
+                      className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
                       href={`/entries/${anchorEntry.id}`}
-                  >
-                    #
-                  </Link>
-                </div>
+                    >
+                      #
+                    </Link>
+                  </div>
                   <ul className="space-y-4">
                     {group.entries.map((entry) => (
                       <li
@@ -120,20 +148,25 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
                         className="group scroll-mt-24 border-l border-border/70 pl-4"
                       >
                         <EntryBody body={entry.body} />
-                        {entry.tags.length > 0 ? (
-                          <ul className="mt-2 flex flex-wrap gap-2">
-                            {entry.tags.map((tag) => (
-                              <li key={tag}>
-                                <Link
-                                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                                  href={`/entries/tags/${encodeURIComponent(tag)}`}
-                                >
-                                  #{tag}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : null}
+                        <div className="mt-2 flex items-start gap-2">
+                          {entry.tags.length > 0 ? (
+                            <ul className="flex flex-wrap gap-2">
+                              {entry.tags.map((tag) => (
+                                <li key={tag}>
+                                  <Link
+                                    className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                                    href={`/entries/tags/${encodeURIComponent(tag)}`}
+                                  >
+                                    #{tag}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null}
+                          <div className="ml-auto">
+                            <LocalTime iso={entry.createdAt.toISOString()} format="time" />
+                          </div>
+                        </div>
                       </li>
                     ))}
                   </ul>

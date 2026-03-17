@@ -3,16 +3,23 @@ import { Prisma } from "@prisma/client"
 import { db } from "@/lib/db"
 
 export const PAGE_SIZE = 50
+export const ADMIN_RECENT_ENTRIES_LIMIT = 12
 
 export type EntriesCursor = {
   createdAt: Date
   id: string
 }
 
-type EntryListItem = {
+export type EntryListItem = {
   id: string
   body: string
   tags: string[]
+  createdAt: Date
+}
+
+export type EntryAdminListItem = {
+  id: string
+  bodyPreview: string
   createdAt: Date
 }
 
@@ -77,6 +84,17 @@ export async function getEntriesByTag(tag: string, cursor?: EntriesCursor, query
       }
     ORDER BY "createdAt" DESC, id DESC
     LIMIT ${PAGE_SIZE}
+  `
+
+  return rows
+}
+
+export async function getRecentEntriesForAdmin(limit = ADMIN_RECENT_ENTRIES_LIMIT) {
+  const rows = await db.$queryRaw<EntryAdminListItem[]>`
+    SELECT id, LEFT(body, 280) AS "bodyPreview", "createdAt"
+    FROM "Entry"
+    ORDER BY "createdAt" DESC, id DESC
+    LIMIT ${limit}
   `
 
   return rows

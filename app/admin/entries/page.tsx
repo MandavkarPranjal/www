@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getEntries } from "@/lib/entries"
+import { getRecentEntriesForAdmin } from "@/lib/entries"
 
 import { createEntryAction } from "./actions"
 import { signOutAction } from "../login/actions"
@@ -8,7 +8,7 @@ import { signOutAction } from "../login/actions"
 export const dynamic = "force-dynamic"
 
 export default async function AdminEntriesPage() {
-  const recentEntries = await getEntries()
+  const recentEntries = await getRecentEntriesForAdmin()
 
   return (
     <main className="min-h-screen px-6 py-16 md:py-24 pb-24 md:pb-24">
@@ -62,9 +62,11 @@ export default async function AdminEntriesPage() {
         <section className="mt-12">
           <h2 className="text-xl font-serif text-foreground">Recent entries</h2>
           <ul className="mt-4 space-y-4">
-            {recentEntries.map((entry: { id: string; body: string; createdAt: Date }) => (
+            {recentEntries.map((entry) => (
               <li key={entry.id} className="border-b border-border pb-4">
-                <p className="line-clamp-2 whitespace-pre-wrap text-sm text-foreground">{entry.body}</p>
+                <p className="line-clamp-2 whitespace-pre-wrap text-sm text-foreground">
+                  {entry.bodyPreview}
+                </p>
                 <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
                   <time dateTime={entry.createdAt.toISOString()}>
                     {entry.createdAt.toISOString().slice(0, 16).replace("T", " ")}

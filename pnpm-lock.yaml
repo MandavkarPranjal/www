@@ -226,8 +226,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
       baseline-browser-mapping:
-        specifier: ^2.10.0
-        version: 2.10.0
+        specifier: ^2.10.16
+        version: 2.10.16
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -1657,8 +1657,8 @@ packages:
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
 
-  baseline-browser-mapping@2.10.0:
-    resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
+  baseline-browser-mapping@2.10.16:
+    resolution: {integrity: sha512-Lyf3aK28zpsD1yQMiiHD4RvVb6UdMoo8xzG2XzFIfR9luPzOpcBlAsT/qfB1XWS1bxWT+UtE4WmQgsp297FYOA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4252,7 +4252,7 @@ snapshots:
 
   bail@2.0.2: {}
 
-  baseline-browser-mapping@2.10.0: {}
+  baseline-browser-mapping@2.10.16: {}
 
   better-auth@1.4.18(@prisma/client@6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3))(next@16.0.10(react-dom@19.2.0(react@19.2.1))(react@19.2.1))(prisma@6.19.2(typescript@5.9.3))(react-dom@19.2.0(react@19.2.1))(react@19.2.1):
     dependencies:
@@ -4286,7 +4286,7 @@ snapshots:
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.10.0
+      baseline-browser-mapping: 2.10.16
       caniuse-lite: 1.0.30001769
       electron-to-chromium: 1.5.286
       node-releases: 2.0.27

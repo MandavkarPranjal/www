@@ -2,11 +2,7 @@
 
 import { ViewTransition } from 'react'
 import Link from "next/link"
-import { useState, useEffect } from 'react'
-import { IconSearch } from '@tabler/icons-react'
-import { MobileSearchDrawer } from '@/components/mobile-search-drawer'
 import type { PostWithMeta } from '@/lib/blog'
-import { searchPosts } from '@/lib/search'
 
 interface BlogIndexClientProps {
     posts: PostWithMeta[]
@@ -27,110 +23,54 @@ function formatDate(dateString: string): string {
 
 
 export function BlogIndexClient({ posts }: BlogIndexClientProps) {
-    const [query, setQuery] = useState('')
-    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
-    const [searchResults, setSearchResults] = useState<PostWithMeta[]>([])
-    const [isSearching, setIsSearching] = useState(false)
-
-    useEffect(() => {
-        const doSearch = async () => {
-            setIsSearching(true)
-            const results = await searchPosts(query, posts, 20)
-            setSearchResults(results)
-            setIsSearching(false)
-        }
-        
-        const timeoutId = setTimeout(doSearch, 100)
-        return () => clearTimeout(timeoutId)
-    }, [query, posts])
-
-    const displayedPosts: PostWithMeta[] = query.trim() ? searchResults : posts
-
     return (
-        <>
-            <ViewTransition>
-                <main className="min-h-screen px-6 py-16 md:py-24 pb-24 md:pb-24">
-                    <div className="mx-auto max-w-2xl">
-                        <h1 className="mb-8 text-4xl font-serif font-medium tracking-tight text-foreground">
-                            Blog
-                        </h1>
+        <ViewTransition>
+            <main className="min-h-screen px-6 py-16 md:py-24 pb-24 md:pb-24">
+                <div className="mx-auto max-w-2xl">
+                    <h1 className="mb-8 text-4xl font-serif font-medium tracking-tight text-foreground">
+                        Blog
+                    </h1>
 
-                        {/* Desktop Search Bar */}
-                        <div className="hidden mb-8 md:block">
-                            <div className="relative">
-                                <IconSearch className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    value={query}
-                                    onChange={(e) => setQuery(e.target.value)}
-                                    className="w-full border-0 border-b border-border bg-transparent pl-6 pr-6 py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus:ring-0"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Posts List */}
-                        <ul className="space-y-6">
-                            {displayedPosts.map((post) => {
-                                const slug = post.slug
-                                const frontmatter = post.frontmatter
-                                const readingTime = post.readingTime
-                                return (
-                                <li key={slug} className="group">
-                                    <Link
-                                        href={`/blog/${slug}`}
-                                        className="block text-foreground"
-                                    >
-                                        <ViewTransition name={`title-${slug}`}>
-                                            <h2 className="text-xl font-medium group-hover:underline underline-offset-4">
-                                                {frontmatter.title || slug}
-                                            </h2>
-                                        </ViewTransition>
-                                        {frontmatter.description && (
-                                            <p className="mt-1 text-muted-foreground">
-                                                {frontmatter.description}
-                                            </p>
+                    {/* Posts List */}
+                    <ul className="space-y-6">
+                        {posts.map((post) => {
+                            const slug = post.slug
+                            const frontmatter = post.frontmatter
+                            const readingTime = post.readingTime
+                            return (
+                            <li key={slug} className="group">
+                                <Link
+                                    href={`/blog/${slug}`}
+                                    className="block text-foreground"
+                                >
+                                    <ViewTransition name={`title-${slug}`}>
+                                        <h2 className="text-xl font-medium group-hover:underline underline-offset-4">
+                                            {frontmatter.title || slug}
+                                        </h2>
+                                    </ViewTransition>
+                                    {frontmatter.description && (
+                                        <p className="mt-1 text-muted-foreground">
+                                            {frontmatter.description}
+                                        </p>
+                                    )}
+                                    <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                                        {frontmatter.date && (
+                                            <ViewTransition name={`date-${slug}`}>
+                                                <span>
+                                                    {formatDate(frontmatter.date)}
+                                                </span>
+                                            </ViewTransition>
                                         )}
-                                        <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-                                            {frontmatter.date && (
-                                                <ViewTransition name={`date-${slug}`}>
-                                                    <span>
-                                                        {formatDate(frontmatter.date)}
-                                                    </span>
-                                                </ViewTransition>
-                                            )}
-                                            {readingTime && (
-                                                <span>{readingTime} min read</span>
-                                            )}
-                                        </div>
-                                    </Link>
-                                </li>
-                            )})}
-                            {displayedPosts.length === 0 && (
-                                <li className="text-muted-foreground">No posts found.</li>
-                            )}
-                        </ul>
-                    </div>
-                </main>
-            </ViewTransition>
-
-            {/* Mobile Floating Search Button */}
-            <button
-                onClick={() => setIsMobileSearchOpen(true)}
-                className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 h-14 w-14 rounded-full bg-foreground text-background shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
-                aria-label="Open search"
-            >
-                <IconSearch className="h-6 w-6" />
-            </button>
-
-            {/* Mobile Search Drawer */}
-            <MobileSearchDrawer
-                isOpen={isMobileSearchOpen}
-                onClose={() => setIsMobileSearchOpen(false)}
-                query={query}
-                onQueryChange={setQuery}
-                resultCount={displayedPosts.length}
-            />
-        </>
+                                        {readingTime && (
+                                            <span>{readingTime} min read</span>
+                                        )}
+                                    </div>
+                                </Link>
+                            </li>
+                        )})}
+                    </ul>
+                </div>
+            </main>
+        </ViewTransition>
     )
 }

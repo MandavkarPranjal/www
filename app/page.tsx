@@ -5,6 +5,11 @@ import { IconBrandX, IconBrandGithub, IconMail, IconCalendar } from "@tabler/ico
 import { getAllPosts } from "@/lib/blog"
 import { projects } from "@/lib/projects"
 
+export const metadata = {
+    title: "Pranjal Mandavkar",
+    description: "Full-stack developer who loves to build things that save clicks or friction.",
+}
+
 export default function Home() {
     const allPosts = getAllPosts()
     const latestPosts = allPosts.slice(0, 3)
@@ -113,6 +118,21 @@ export default function Home() {
                         </div>
                     ))}
                 </div>
+            </section>
+
+            {/* Mini Apps Section */}
+            <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-backwards">
+                <div className="flex items-baseline justify-between">
+                    <h1 className="text-xl font-serif font-medium tracking-tight text-foreground italic">
+                        mini apps
+                    </h1>
+                    <Link href="/mini-apps" className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
+                        View all
+                    </Link>
+                </div>
+                <p className="text-muted-foreground text-sm">
+                    a growing collection of small things i built for quick use, fun, and cool stuff.
+                </p>
             </section>
 
             {/* Latest Writing Section */}

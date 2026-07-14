@@ -1,0 +1,57 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "01KXGX8NTGM2324KR2D35C8BRG",
+  "session_id": "ses_09e3535abffe7DZYmUUUm78VVs",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-14T18:12:18.791294414Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "components/blog-index-client.tsx",
+    "components/mobile-search-drawer.tsx",
+    "lib/search.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.5-free",
+  "turn_id": "10d70f11a937",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 9550,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 158848,
+    "output_tokens": 1575,
+    "api_call_count": 11
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-14T18:12:18.782822462Z",
+    "agent_lines": 46,
+    "agent_removed": 276,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 46,
+    "total_lines_changed": 322,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 46,
+      "agent_lines_removed": 276
+    }
+  ]
+}

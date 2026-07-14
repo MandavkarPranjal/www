@@ -1,0 +1,1 @@
+now noo need for search option/feature on blog page because of cmd+k

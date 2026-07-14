@@ -19,17 +19,17 @@
     },
     "cost": 0,
     "tokens": {
-      "input": 9550,
-      "output": 1575,
-      "reasoning": 583,
+      "input": 9991,
+      "output": 1666,
+      "reasoning": 612,
       "cache": {
-        "read": 158848,
+        "read": 197760,
         "write": 0
       }
     },
     "time": {
       "created": 1784052107860,
-      "updated": 1784052730299
+      "updated": 1784052744885
     }
   },
   "messages": [
@@ -1296,19 +1296,22 @@
         },
         "cost": 0,
         "tokens": {
-          "input": 0,
-          "output": 0,
-          "reasoning": 0,
+          "total": 19644,
+          "input": 175,
+          "output": 55,
+          "reasoning": 22,
           "cache": {
-            "read": 0,
-            "write": 0
+            "write": 0,
+            "read": 19392
           }
         },
         "modelID": "mimo-v2.5-free",
         "providerID": "opencode",
         "time": {
-          "created": 1784052730296
+          "created": 1784052730296,
+          "completed": 1784052744874
         },
+        "finish": "tool-calls",
         "id": "msg_f61d449b8001M2sMtuDjmAkf3O",
         "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs"
       },
@@ -1336,21 +1339,127 @@
           "tool": "bash",
           "callID": "call_7750a5d16d5c4d1fb98e874d",
           "state": {
-            "metadata": {
-              "output": ""
-            },
-            "status": "running",
+            "status": "completed",
             "input": {
               "command": "git add -A && git commit -m \"remove: blog search\" && git push",
               "workdir": "/home/himmel/personal/www"
             },
+            "output": "[main 2ff8039] remove: blog search\n 3 files changed, 46 insertions(+), 276 deletions(-)\n delete mode 100644 components/mobile-search-drawer.tsx\n delete mode 100644 lib/search.ts\n[entire] Pushing 1 checkpoint ref(s) to origin.... done\nTo https://github.com/MandavkarPranjal/www.git\n   b56b0bc..2ff8039  main -> main\n",
+            "metadata": {
+              "output": "[main 2ff8039] remove: blog search\n 3 files changed, 46 insertions(+), 276 deletions(-)\n delete mode 100644 components/mobile-search-drawer.tsx\n delete mode 100644 lib/search.ts\n[entire] Pushing 1 checkpoint ref(s) to origin.... done\nTo https://github.com/MandavkarPranjal/www.git\n   b56b0bc..2ff8039  main -> main\n",
+              "exit": 0,
+              "truncated": false
+            },
+            "title": "git add -A && git commit -m \"remove: blog search\" && git push",
             "time": {
-              "start": 1784052733710
+              "start": 1784052744745,
+              "end": 1784052744782
             }
           },
           "id": "prt_f61d454ff001Pitu63PYhOYBjW",
           "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
           "messageID": "msg_f61d449b8001M2sMtuDjmAkf3O"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d597fff054b702863c02a4b22a7746eb95b14350",
+          "type": "step-finish",
+          "tokens": {
+            "total": 19644,
+            "input": 175,
+            "output": 55,
+            "reasoning": 22,
+            "cache": {
+              "write": 0,
+              "read": 19392
+            }
+          },
+          "cost": 0,
+          "id": "prt_f61d4827d001XYRQzj0OOezA56",
+          "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
+          "messageID": "msg_f61d449b8001M2sMtuDjmAkf3O"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_f61d4217d001BeSed0qmrY70TQ",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/home/himmel/personal/www",
+          "root": "/home/himmel/personal/www"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 19829,
+          "input": 266,
+          "output": 36,
+          "reasoning": 7,
+          "cache": {
+            "write": 0,
+            "read": 19520
+          }
+        },
+        "modelID": "mimo-v2.5-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1784052744881,
+          "completed": 1784052747484
+        },
+        "finish": "stop",
+        "id": "msg_f61d482b10016b01V6omOisVwO",
+        "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs"
+      },
+      "parts": [
+        {
+          "snapshot": "d597fff054b702863c02a4b22a7746eb95b14350",
+          "type": "step-start",
+          "id": "prt_f61d48a58001cGWO65EcXwV9gm",
+          "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
+          "messageID": "msg_f61d482b10016b01V6omOisVwO"
+        },
+        {
+          "type": "reasoning",
+          "text": "Done. Committed and pushed.",
+          "time": {
+            "start": 1784052746845,
+            "end": 1784052746957
+          },
+          "id": "prt_f61d48a5d0011LSjnV7KPuCIPs",
+          "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
+          "messageID": "msg_f61d482b10016b01V6omOisVwO"
+        },
+        {
+          "type": "text",
+          "text": "Done. Committed and pushed `2ff8039` to `main`.\n\n",
+          "time": {
+            "start": 1784052746962,
+            "end": 1784052747452
+          },
+          "id": "prt_f61d48ad1001i9BAglcY47XKrk",
+          "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
+          "messageID": "msg_f61d482b10016b01V6omOisVwO"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "d597fff054b702863c02a4b22a7746eb95b14350",
+          "type": "step-finish",
+          "tokens": {
+            "total": 19829,
+            "input": 266,
+            "output": 36,
+            "reasoning": 7,
+            "cache": {
+              "write": 0,
+              "read": 19520
+            }
+          },
+          "cost": 0,
+          "id": "prt_f61d48cc8001zP0jI2XWbsRrl4",
+          "sessionID": "ses_09e3535abffe7DZYmUUUm78VVs",
+          "messageID": "msg_f61d482b10016b01V6omOisVwO"
         }
       ]
     }

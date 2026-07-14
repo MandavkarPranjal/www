@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "01KXGQFBAQNJAAV8HZF7MGNR6G",
+  "session_id": "019f6165-85c1-7812-91a9-916606747b46",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-14T16:31:18.908948319Z",
+  "branch": "side-project",
+  "checkpoints_count": 3,
+  "save_step_count": 3,
+  "files_touched": [
+    "app/mini-apps/page.tsx",
+    "app/page.tsx"
+  ],
+  "agent": "Pi",
+  "model": "mimo-v2.5-free",
+  "turn_id": "fe5de4eb473c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 17925,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 142208,
+    "output_tokens": 7302,
+    "api_call_count": 18
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-14T16:31:18.864737683Z",
+    "agent_lines": 182,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 182,
+    "total_lines_changed": 182,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 131,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 241,
+      "agent_lines_removed": 0
+    }
+  ]
+}

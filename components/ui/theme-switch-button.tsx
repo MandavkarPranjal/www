@@ -54,6 +54,7 @@ export function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
   return (
     <button
       onClick={toggleTheme}
+      suppressHydrationWarning
       className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-color-primary)] hover:opacity-80 transition-opacity overflow-hidden ${className}`}
     >
       <IconSun

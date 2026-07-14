@@ -46,7 +46,7 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en" className="dark">
+        <html lang="en" className="dark" suppressHydrationWarning>
             <head>
                 <PlausibleProvider domain="pr5.dev" />
             </head>

@@ -1,0 +1,13 @@
+add a section for mini apps on home page that will take to new page where it will have my side projects/fun projects and scripts/vanilla and icon for mini apps should be /tmp/pi-clipboard-3216cbdf-4da0-400b-9640-e634d66fd4c5.png
+
+---
+
+the page should like /tmp/pi-clipboard-e017ff2a-60d9-44e0-8c3e-05d7b7a688f4.png
+
+---
+
+the design is not good, don't try to copy use that as inpiration
+
+---
+
+ui of tags in mini app is bad

@@ -6,6 +6,11 @@ import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import "@prose-ui/next/prose-ui.css"
 import { ThemeSwitch } from "@/components/ui/theme-switch-button"
+import { SearchHint } from "@/components/search-hint"
+import { CommandMenu } from "@/components/command-menu"
+import { getAllPosts } from "@/lib/blog"
+import { projects } from "@/lib/projects"
+import { miniApps } from "@/lib/mini-apps"
 
 export const metadata: Metadata = {
     title: "Pranjal Mandavkar",
@@ -45,6 +50,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const posts = getAllPosts()
+
     return (
         <html lang="en" className="dark" suppressHydrationWarning>
             <head>
@@ -52,7 +59,9 @@ export default function RootLayout({
             </head>
             <body className={`font-sans antialiased`}>
                 <NuqsAdapter>
-                    <div className="fixed right-4 top-4 z-50">
+                    <CommandMenu posts={posts} projects={projects} miniApps={miniApps} />
+                    <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
+                        <SearchHint />
                         <ThemeSwitch />
                     </div>
                     {children}

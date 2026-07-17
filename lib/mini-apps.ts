@@ -27,4 +27,10 @@ export const miniApps: MiniApp[] = [
     tags: ["jj"],
     code: "https://github.com/MandavkarPranjal/fzf-jj.sh",
   },
+  {
+    title: "open-repo",
+    description: "script to open github repo in browser from terminal(best used with tmux)",
+    tags: ["github", "repo", "terminal", "tmux"],
+    code: "https://raw.githubusercontent.com/MandavkarPranjal/environment/refs/heads/main/home/scripts/open-repo",
+  },
 ]

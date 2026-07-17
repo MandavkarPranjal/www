@@ -10,14 +10,6 @@ export const metadata = {
 export default function MiniAppsPage() {
   return (
     <main className="min-h-screen px-6 py-16 md:py-24 max-w-3xl mx-auto space-y-12 animate-in fade-in duration-500">
-      {/* Back Link */}
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        ← back
-      </Link>
-
       {/* Header */}
       <section className="space-y-3">
         <h1 className="text-4xl font-serif font-medium tracking-tight text-foreground">

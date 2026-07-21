@@ -3,7 +3,7 @@
   "checkpoint_id": "01KY27KHZEEHNZVDH0A0X35VXR",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 6,
   "files_touched": [
     "app/page.tsx",
     "components.json",
@@ -11,6 +11,9 @@
     "components/share-buttons.tsx",
     "components/social-link.tsx",
     "components/ui/theme-switch-button.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/ease.ts",
+    "lib/hooks/use-hover-capable.ts",
     "package.json",
     "pnpm-lock.yaml"
   ],
@@ -21,6 +24,13 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
@@ -28,6 +38,6 @@
     "cache_creation_tokens": 0,
     "cache_read_tokens": 499584,
     "output_tokens": 9996,
-    "api_call_count": 24
+    "api_call_count": 25
   }
 }

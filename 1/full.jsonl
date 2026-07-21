@@ -1,0 +1,160 @@
+{
+  "info": {
+    "id": "ses_07b8da456ffeRNnS72Z82Zzh4Y",
+    "slug": "lucky-engine",
+    "projectID": "543e437f5f1d39b5ec0e7518e2768fe1e79dd161",
+    "directory": "/home/himmel/personal/www",
+    "path": "",
+    "parentID": "ses_07b8de894ffejEA1gyHGK4wYEp",
+    "title": "Explore codebase for tooltip usage (@explore subagent)",
+    "agent": "explore",
+    "model": {
+      "id": "mimo-v2.5-free",
+      "providerID": "opencode",
+      "variant": "default"
+    },
+    "version": "1.18.4",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "permission": [
+      {
+        "permission": "todowrite",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "task",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "compress",
+        "pattern": "*",
+        "action": "deny"
+      }
+    ],
+    "time": {
+      "created": 1784633514921,
+      "updated": 1784633515140
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1784633514952
+        },
+        "agent": "explore",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "mimo-v2.5-free"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_f84725bc7001MHGXBKZvHjUDEK",
+        "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "I need to find all places in this Next.js project where the Tooltip component from @components/ui/tooltip.tsx should be added. \n\nLook for:\n1. Icon buttons (especially in navigation, toolbars, headers)\n2. Action buttons with icons only (no text)\n3. Elements that might have truncated text\n4. Navigation items that could benefit from tooltips\n5. Any interactive elements that could use additional context\n\nFor each location found, provide:\n- File path\n- Line number\n- What the element does\n- Suggested tooltip content\n- Which side the tooltip should appear on (top, bottom, left, right)\n\nFocus on finding at least 5-10 good candidates across different parts of the application. Return the findings in a structured format.",
+          "id": "prt_f84725bdf001AKWfoxm3pMCkUE",
+          "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y",
+          "messageID": "msg_f84725bc7001MHGXBKZvHjUDEK"
+        },
+        {
+          "type": "text",
+          "synthetic": true,
+          "text": "Called the Read tool with the following input: {\"filePath\":\"/home/himmel/personal/www/components/ui/tooltip.tsx\"}",
+          "id": "prt_f84725bdf002rMyFAMxPm6oqXZ",
+          "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y",
+          "messageID": "msg_f84725bc7001MHGXBKZvHjUDEK"
+        },
+        {
+          "type": "text",
+          "synthetic": true,
+          "text": "<path>/home/himmel/personal/www/components/ui/tooltip.tsx</path>\n<type>file</type>\n<content>\n1: \"use client\";\n2: \n3: import { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\n4: import type { Variants } from \"motion/react\";\n5: import {\n6:   cloneElement,\n7:   isValidElement,\n8:   useCallback,\n9:   useEffect,\n10:   useId,\n11:   useMemo,\n12:   useRef,\n13:   useState,\n14: } from \"react\";\n15: import type { ReactElement, ReactNode } from \"react\";\n16: import { createPortal } from \"react-dom\";\n17: \n18: import { EASE_OUT } from \"@/lib/ease\";\n19: import { useHoverCapable } from \"@/lib/hooks/use-hover-capable\";\n20: import { cn } from \"@/lib/utils\";\n21: \n22: type Side = \"top\" | \"right\" | \"bottom\" | \"left\";\n23: \n24: export interface TooltipProps {\n25:   content: ReactNode;\n26:   children: ReactElement;\n27:   side?: Side;\n28:   /** Delay before showing (ms). Default 120. */\n29:   delay?: number;\n30:   className?: string;\n31:   /** Classes for the outer wrapper span. Use to fix baseline / fill parent. */\n32:   wrapperClassName?: string;\n33: }\n34: \n35: // Gap between trigger and tooltip, in px.\n36: const GAP = 8;\n37: \n38: // Centering transform for the fixed-positioned anchor point, per side.\n39: const anchorTransform: Record<Side, string> = {\n40:   bottom: \"translate(-50%, 0)\",\n41:   left: \"translate(-100%, -50%)\",\n42:   right: \"translate(0, -50%)\",\n43:   top: \"translate(-50%, -100%)\",\n44: };\n45: \n46: const transformOrigin: Record<Side, string> = {\n47:   bottom: \"center top\",\n48:   left: \"right center\",\n49:   right: \"left center\",\n50:   top: \"center bottom\",\n51: };\n52: \n53: // Offset is in the direction *away* from the trigger — content originates near\n54: // the trigger and rises into resting position.\n55: const offsetFrom: Record<Side, { x?: number; y?: number }> = {\n56:   bottom: { y: -8 },\n57:   left: { x: 8 },\n58:   right: { x: -8 },\n59:   top: { y: 8 },\n60: };\n61: \n62: const buildVariants = (side: Side): Variants => {\n63:   const o = offsetFrom[side];\n64:   return {\n65:     animate: {\n66:       filter: \"blur(0px)\",\n67:       opacity: 1,\n68:       scale: 1,\n69:       transition: {\n70:         damping: 30,\n71:         filter: { duration: 0.18, ease: EASE_OUT },\n72:         mass: 0.7,\n73:         opacity: { duration: 0.14, ease: EASE_OUT },\n74:         stiffness: 380,\n75:         type: \"spring\",\n76:       },\n77:       x: 0,\n78:       y: 0,\n79:     },\n80:     exit: {\n81:       filter: \"blur(3px)\",\n82:       opacity: 0,\n83:       scale: 0.94,\n84:       transition: { duration: 0.12, ease: EASE_OUT },\n85:       x: (o.x ?? 0) * 0.6,\n86:       y: (o.y ?? 0) * 0.6,\n87:     },\n88:     initial: {\n89:       filter: \"blur(5px)\",\n90:       opacity: 0,\n91:       scale: 0.9,\n92:       x: o.x ?? 0,\n93:       y: o.y ?? 0,\n94:     },\n95:   };\n96: };\n97: \n98: const REDUCED_VARIANTS: Variants = {\n99:   animate: { opacity: 1, transition: { duration: 0.14, ease: EASE_OUT } },\n100:   exit: { opacity: 0, transition: { duration: 0.1, ease: EASE_OUT } },\n101:   initial: { opacity: 0 },\n102: };\n103: \n104: // Once any tooltip has just closed, neighbouring tooltips open without the\n105: // initial delay — moving along a toolbar feels instant after the first one.\n106: const WARM_WINDOW_MS = 300;\n107: let lastHiddenAt = 0;\n108: \n109: export const Tooltip = ({\n110:   content,\n111:   children,\n112:   side = \"top\",\n113:   delay = 120,\n114:   className,\n115:   wrapperClassName,\n116: }: TooltipProps) => {\n117:   const [open, setOpen] = useState(false);\n118:   const [coords, setCoords] = useState<{ top: number; left: number } | null>(\n119:     null\n120:   );\n121:   const id = useId();\n122:   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);\n123:   const anchorRef = useRef<HTMLSpanElement>(null);\n124:   const reduce = useReducedMotion();\n125:   const canHover = useHoverCapable();\n126: \n127:   // Anchor point in viewport coords, on the edge of the trigger facing `side`.\n128:   // Position:fixed means these viewport coords place the tooltip directly, so\n129:   // it escapes every ancestor's stacking context and overflow.\n130:   const place = useCallback(() => {\n131:     const el = anchorRef.current;\n132:     if (!el) {\n133:       return;\n134:     }\n135:     const r = el.getBoundingClientRect();\n136:     const cx = r.left + r.width / 2;\n137:     const cy = r.top + r.height / 2;\n138:     const point: Record<Side, { top: number; left: number }> = {\n139:       bottom: { left: cx, top: r.bottom + GAP },\n140:       left: { left: r.left - GAP, top: cy },\n141:       right: { left: r.right + GAP, top: cy },\n142:       top: { left: cx, top: r.top - GAP },\n143:     };\n144:     setCoords(point[side]);\n145:   }, [side]);\n146: \n147:   const show = useCallback(() => {\n148:     if (!canHover) {\n149:       return;\n150:     }\n151:     if (timer.current) {\n152:       clearTimeout(timer.current);\n153:     }\n154:     const warm = Date.now() - lastHiddenAt < WARM_WINDOW_MS;\n155:     timer.current = setTimeout(\n156:       () => {\n157:         place();\n158:         setOpen(true);\n159:       },\n160:       warm ? 0 : delay\n161:     );\n162:   }, [canHover, delay, place]);\n163: \n164:   const hide = useCallback(() => {\n165:     if (timer.current) {\n166:       clearTimeout(timer.current);\n167:       timer.current = null;\n168:     }\n169:     if (open) {\n170:       lastHiddenAt = Date.now();\n171:     }\n172:     setOpen(false);\n173:   }, [open]);\n174: \n175:   // Keep the tooltip pinned to the trigger while it's open and the page scrolls\n176:   // or resizes (fixed coords are viewport-relative).\n177:   useEffect(() => {\n178:     if (!open) {\n179:       return;\n180:     }\n181:     const onMove = () => place();\n182:     window.addEventListener(\"scroll\", onMove, true);\n183:     window.addEventListener(\"resize\", onMove);\n184:     return () => {\n185:       window.removeEventListener(\"scroll\", onMove, true);\n186:       window.removeEventListener(\"resize\", onMove);\n187:     };\n188:   }, [open, place]);\n189: \n190:   const variants = useMemo(\n191:     () => (reduce ? REDUCED_VARIANTS : buildVariants(side)),\n192:     [reduce, side]\n193:   );\n194: \n195:   if (!isValidElement(children)) {\n196:     return children;\n197:   }\n198: \n199:   const trigger = cloneElement(\n200:     children as ReactElement<Record<string, unknown>>,\n201:     {\n202:       \"aria-describedby\": id,\n203:       onBlur: hide,\n204:       onFocus: show,\n205:       onMouseEnter: show,\n206:       onMouseLeave: hide,\n207:     }\n208:   );\n209: \n210:   return (\n211:     <>\n212:       <span\n213:         ref={anchorRef}\n214:         className={cn(\"relative inline-flex align-middle\", wrapperClassName)}\n215:       >\n216:         {trigger}\n217:       </span>\n218:       {typeof document === \"undefined\"\n219:         ? null\n220:         : createPortal(\n221:             <AnimatePresence>\n222:               {open && coords ? (\n223:                 <span\n224:                   aria-hidden\n225:                   className=\"pointer-events-none fixed z-[9999]\"\n226:                   style={{\n227:                     left: coords.left,\n228:                     top: coords.top,\n229:                     transform: anchorTransform[side],\n230:                   }}\n231:                 >\n232:                   <motion.span\n233:                     id={id}\n234:                     role=\"tooltip\"\n235:                     variants={variants}\n236:                     initial=\"initial\"\n237:                     animate=\"animate\"\n238:                     exit=\"exit\"\n239:                     style={{ transformOrigin: transformOrigin[side] }}\n240:                     className={cn(\n241:                       \"block whitespace-nowrap rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground shadow-lg\",\n242:                       className\n243:                     )}\n244:                   >\n245:                     {content}\n246:                   </motion.span>\n247:                 </span>\n248:               ) : null}\n249:             </AnimatePresence>,\n250:             document.body\n251:           )}\n252:     </>\n253:   );\n254: };\n\n(End of file - total 254 lines)\n</content>",
+          "id": "prt_f84725bdf003yLZSTknzIfmELZ",
+          "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y",
+          "messageID": "msg_f84725bc7001MHGXBKZvHjUDEK"
+        },
+        {
+          "type": "file",
+          "url": "file:///home/himmel/personal/www/components/ui/tooltip.tsx",
+          "filename": "components/ui/tooltip.tsx",
+          "mime": "text/plain",
+          "id": "prt_f84725bdf004EiXjRcJvoJnu8G",
+          "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y",
+          "messageID": "msg_f84725bc7001MHGXBKZvHjUDEK"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_f84725bc7001MHGXBKZvHjUDEK",
+        "role": "assistant",
+        "mode": "explore",
+        "agent": "explore",
+        "path": {
+          "cwd": "/home/himmel/personal/www",
+          "root": "/home/himmel/personal/www"
+        },
+        "cost": 0,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "reasoning": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "modelID": "mimo-v2.5-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1784633515094,
+          "completed": 1784633518395
+        },
+        "error": {
+          "name": "APIError",
+          "data": {
+            "message": "No provider available",
+            "statusCode": 401,
+            "isRetryable": false,
+            "responseHeaders": {
+              "cf-placement": "remote-ORD",
+              "cf-ray": "a1e9e1cefcf4c153-PDX",
+              "connection": "keep-alive",
+              "content-length": "80",
+              "content-type": "text/plain;charset=UTF-8",
+              "date": "Tue, 21 Jul 2026 11:31:55 GMT",
+              "server": "cloudflare"
+            },
+            "responseBody": "{\"type\":\"error\",\"error\":{\"type\":\"ModelError\",\"message\":\"No provider available\"}}",
+            "metadata": {
+              "url": "https://opencode.ai/zen/v1/chat/completions"
+            }
+          }
+        },
+        "id": "msg_f84725c56001Br4JYTmoqfdbjP",
+        "sessionID": "ses_07b8da456ffeRNnS72Z82Zzh4Y"
+      },
+      "parts": []
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { IconMoon, IconSun } from '@tabler/icons-react'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface ThemeSwitchProps {
   className?: string
@@ -52,25 +53,25 @@ export function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
   }, [theme])
 
   return (
-    <button
-      onClick={toggleTheme}
-      suppressHydrationWarning
-      className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-color-primary)] hover:opacity-80 transition-opacity overflow-hidden ${className}`}
-    >
-      <IconSun
-        className={`absolute h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          theme === 'light' 
-            ? 'scale-100 translate-y-0 opacity-100' 
+    <Tooltip content={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'} side="left">
+      <button
+        onClick={toggleTheme}
+        suppressHydrationWarning
+        className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-color-primary)] hover:opacity-80 transition-opacity overflow-hidden ${className}`}
+      >
+        <IconSun
+          className={`absolute h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${theme === 'light'
+            ? 'scale-100 translate-y-0 opacity-100'
             : 'scale-50 translate-y-5 opacity-0'
-        }`}
-      />
-      <IconMoon
-        className={`absolute h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          theme === 'dark' 
-            ? 'scale-100 translate-y-0 opacity-100' 
+            }`}
+        />
+        <IconMoon
+          className={`absolute h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${theme === 'dark'
+            ? 'scale-100 translate-y-0 opacity-100'
             : 'scale-50 translate-y-5 opacity-0'
-        }`}
-      />
-    </button>
+            }`}
+        />
+      </button>
+    </Tooltip>
   )
 }

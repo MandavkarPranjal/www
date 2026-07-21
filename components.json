@@ -18,5 +18,7 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@prsui": "https://prsui.pr5.dev/r/{name}.json"
+  }
 }

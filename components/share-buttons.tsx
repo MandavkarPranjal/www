@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { IconShare2, IconBrandX, IconBrandLinkedin, IconLink } from '@tabler/icons-react'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface ShareButtonsProps {
     url: string
@@ -38,34 +39,37 @@ export function ShareButtons({ url, title, description }: ShareButtonsProps) {
                     <IconShare2 className="h-4 w-4" />
                     Share
                 </span>
-                <a
-                    href={shareLinks.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                    aria-label="Share on Twitter"
-                    title="Share on Twitter"
-                >
-                    <IconBrandX className="h-4 w-4" />
-                </a>
-                <a
-                    href={shareLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                    aria-label="Share on LinkedIn"
-                    title="Share on LinkedIn"
-                >
-                    <IconBrandLinkedin className="h-4 w-4" />
-                </a>
-                <button
-                    onClick={copyToClipboard}
-                    className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                    aria-label="Copy link"
-                    title="Copy link to clipboard"
-                >
-                    <IconLink className="h-4 w-4" />
-                </button>
+                <Tooltip content="Share on Twitter">
+                    <a
+                        href={shareLinks.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        aria-label="Share on Twitter"
+                    >
+                        <IconBrandX className="h-4 w-4" />
+                    </a>
+                </Tooltip>
+                <Tooltip content="Share on LinkedIn">
+                    <a
+                        href={shareLinks.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        aria-label="Share on LinkedIn"
+                    >
+                        <IconBrandLinkedin className="h-4 w-4" />
+                    </a>
+                </Tooltip>
+                <Tooltip content="Copy link to clipboard">
+                    <button
+                        onClick={copyToClipboard}
+                        className="rounded-full border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        aria-label="Copy link"
+                    >
+                        <IconLink className="h-4 w-4" />
+                    </button>
+                </Tooltip>
             </div>
         </div>
     )

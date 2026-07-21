@@ -1,4 +1,5 @@
 import { GithubInfo } from "@/components/github-info"
+import { SocialLink } from "@/components/social-link"
 import Link from "next/link"
 import Image from "next/image"
 import { IconBrandX, IconBrandGithub, IconMail, IconCalendar } from "@tabler/icons-react"
@@ -54,9 +55,15 @@ export default function Home() {
 
                         {/* Social Links */}
                         <div className="flex gap-5 pt-2">
-                            <SocialLink href="https://github.com/mandavkarpranjal" icon={IconBrandGithub} label="GitHub" />
-                            <SocialLink href="https://x.com/pr5dev" icon={IconBrandX} label="Twitter" />
-                            <SocialLink href="mailto:contact@pr5.dev" icon={IconMail} label="Email" />
+                            <SocialLink href="https://github.com/mandavkarpranjal" label="GitHub">
+                                <IconBrandGithub className="h-5 w-5" />
+                            </SocialLink>
+                            <SocialLink href="https://x.com/pr5dev" label="X (Twitter)">
+                                <IconBrandX className="h-5 w-5" />
+                            </SocialLink>
+                            <SocialLink href="mailto:contact@pr5.dev" label="Email">
+                                <IconMail className="h-5 w-5" />
+                            </SocialLink>
                         </div>
                     </div>
 
@@ -181,17 +188,6 @@ export default function Home() {
     )
 }
 
-function SocialLink({ href, icon: Icon, label }: { href: string, icon: React.ElementType, label: string }) {
-    return (
-        <Link
-            href={href}
-            target="_blank"
-            aria-label={label}
-            className="text-muted-foreground hover:text-foreground transition-colors p-2 -ml-2 rounded-md hover:bg-accent/50"
-        >
-            <Icon className="h-5 w-5" />
-        </Link>
-    )
-}
+
 
 

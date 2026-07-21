@@ -1,0 +1,262 @@
+use @components/ui/tooltip.tsx on all needed things
+Called the Read tool with the following input: {"filePath":"/home/himmel/personal/www/components/ui/tooltip.tsx"}
+<path>/home/himmel/personal/www/components/ui/tooltip.tsx</path>
+<type>file</type>
+<content>
+1: "use client";
+2: 
+3: import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+4: import type { Variants } from "motion/react";
+5: import {
+6:   cloneElement,
+7:   isValidElement,
+8:   useCallback,
+9:   useEffect,
+10:   useId,
+11:   useMemo,
+12:   useRef,
+13:   useState,
+14: } from "react";
+15: import type { ReactElement, ReactNode } from "react";
+16: import { createPortal } from "react-dom";
+17: 
+18: import { EASE_OUT } from "@/lib/ease";
+19: import { useHoverCapable } from "@/lib/hooks/use-hover-capable";
+20: import { cn } from "@/lib/utils";
+21: 
+22: type Side = "top" | "right" | "bottom" | "left";
+23: 
+24: export interface TooltipProps {
+25:   content: ReactNode;
+26:   children: ReactElement;
+27:   side?: Side;
+28:   /** Delay before showing (ms). Default 120. */
+29:   delay?: number;
+30:   className?: string;
+31:   /** Classes for the outer wrapper span. Use to fix baseline / fill parent. */
+32:   wrapperClassName?: string;
+33: }
+34: 
+35: // Gap between trigger and tooltip, in px.
+36: const GAP = 8;
+37: 
+38: // Centering transform for the fixed-positioned anchor point, per side.
+39: const anchorTransform: Record<Side, string> = {
+40:   bottom: "translate(-50%, 0)",
+41:   left: "translate(-100%, -50%)",
+42:   right: "translate(0, -50%)",
+43:   top: "translate(-50%, -100%)",
+44: };
+45: 
+46: const transformOrigin: Record<Side, string> = {
+47:   bottom: "center top",
+48:   left: "right center",
+49:   right: "left center",
+50:   top: "center bottom",
+51: };
+52: 
+53: // Offset is in the direction *away* from the trigger — content originates near
+54: // the trigger and rises into resting position.
+55: const offsetFrom: Record<Side, { x?: number; y?: number }> = {
+56:   bottom: { y: -8 },
+57:   left: { x: 8 },
+58:   right: { x: -8 },
+59:   top: { y: 8 },
+60: };
+61: 
+62: const buildVariants = (side: Side): Variants => {
+63:   const o = offsetFrom[side];
+64:   return {
+65:     animate: {
+66:       filter: "blur(0px)",
+67:       opacity: 1,
+68:       scale: 1,
+69:       transition: {
+70:         damping: 30,
+71:         filter: { duration: 0.18, ease: EASE_OUT },
+72:         mass: 0.7,
+73:         opacity: { duration: 0.14, ease: EASE_OUT },
+74:         stiffness: 380,
+75:         type: "spring",
+76:       },
+77:       x: 0,
+78:       y: 0,
+79:     },
+80:     exit: {
+81:       filter: "blur(3px)",
+82:       opacity: 0,
+83:       scale: 0.94,
+84:       transition: { duration: 0.12, ease: EASE_OUT },
+85:       x: (o.x ?? 0) * 0.6,
+86:       y: (o.y ?? 0) * 0.6,
+87:     },
+88:     initial: {
+89:       filter: "blur(5px)",
+90:       opacity: 0,
+91:       scale: 0.9,
+92:       x: o.x ?? 0,
+93:       y: o.y ?? 0,
+94:     },
+95:   };
+96: };
+97: 
+98: const REDUCED_VARIANTS: Variants = {
+99:   animate: { opacity: 1, transition: { duration: 0.14, ease: EASE_OUT } },
+100:   exit: { opacity: 0, transition: { duration: 0.1, ease: EASE_OUT } },
+101:   initial: { opacity: 0 },
+102: };
+103: 
+104: // Once any tooltip has just closed, neighbouring tooltips open without the
+105: // initial delay — moving along a toolbar feels instant after the first one.
+106: const WARM_WINDOW_MS = 300;
+107: let lastHiddenAt = 0;
+108: 
+109: export const Tooltip = ({
+110:   content,
+111:   children,
+112:   side = "top",
+113:   delay = 120,
+114:   className,
+115:   wrapperClassName,
+116: }: TooltipProps) => {
+117:   const [open, setOpen] = useState(false);
+118:   const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+119:     null
+120:   );
+121:   const id = useId();
+122:   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+123:   const anchorRef = useRef<HTMLSpanElement>(null);
+124:   const reduce = useReducedMotion();
+125:   const canHover = useHoverCapable();
+126: 
+127:   // Anchor point in viewport coords, on the edge of the trigger facing `side`.
+128:   // Position:fixed means these viewport coords place the tooltip directly, so
+129:   // it escapes every ancestor's stacking context and overflow.
+130:   const place = useCallback(() => {
+131:     const el = anchorRef.current;
+132:     if (!el) {
+133:       return;
+134:     }
+135:     const r = el.getBoundingClientRect();
+136:     const cx = r.left + r.width / 2;
+137:     const cy = r.top + r.height / 2;
+138:     const point: Record<Side, { top: number; left: number }> = {
+139:       bottom: { left: cx, top: r.bottom + GAP },
+140:       left: { left: r.left - GAP, top: cy },
+141:       right: { left: r.right + GAP, top: cy },
+142:       top: { left: cx, top: r.top - GAP },
+143:     };
+144:     setCoords(point[side]);
+145:   }, [side]);
+146: 
+147:   const show = useCallback(() => {
+148:     if (!canHover) {
+149:       return;
+150:     }
+151:     if (timer.current) {
+152:       clearTimeout(timer.current);
+153:     }
+154:     const warm = Date.now() - lastHiddenAt < WARM_WINDOW_MS;
+155:     timer.current = setTimeout(
+156:       () => {
+157:         place();
+158:         setOpen(true);
+159:       },
+160:       warm ? 0 : delay
+161:     );
+162:   }, [canHover, delay, place]);
+163: 
+164:   const hide = useCallback(() => {
+165:     if (timer.current) {
+166:       clearTimeout(timer.current);
+167:       timer.current = null;
+168:     }
+169:     if (open) {
+170:       lastHiddenAt = Date.now();
+171:     }
+172:     setOpen(false);
+173:   }, [open]);
+174: 
+175:   // Keep the tooltip pinned to the trigger while it's open and the page scrolls
+176:   // or resizes (fixed coords are viewport-relative).
+177:   useEffect(() => {
+178:     if (!open) {
+179:       return;
+180:     }
+181:     const onMove = () => place();
+182:     window.addEventListener("scroll", onMove, true);
+183:     window.addEventListener("resize", onMove);
+184:     return () => {
+185:       window.removeEventListener("scroll", onMove, true);
+186:       window.removeEventListener("resize", onMove);
+187:     };
+188:   }, [open, place]);
+189: 
+190:   const variants = useMemo(
+191:     () => (reduce ? REDUCED_VARIANTS : buildVariants(side)),
+192:     [reduce, side]
+193:   );
+194: 
+195:   if (!isValidElement(children)) {
+196:     return children;
+197:   }
+198: 
+199:   const trigger = cloneElement(
+200:     children as ReactElement<Record<string, unknown>>,
+201:     {
+202:       "aria-describedby": id,
+203:       onBlur: hide,
+204:       onFocus: show,
+205:       onMouseEnter: show,
+206:       onMouseLeave: hide,
+207:     }
+208:   );
+209: 
+210:   return (
+211:     <>
+212:       <span
+213:         ref={anchorRef}
+214:         className={cn("relative inline-flex align-middle", wrapperClassName)}
+215:       >
+216:         {trigger}
+217:       </span>
+218:       {typeof document === "undefined"
+219:         ? null
+220:         : createPortal(
+221:             <AnimatePresence>
+222:               {open && coords ? (
+223:                 <span
+224:                   aria-hidden
+225:                   className="pointer-events-none fixed z-[9999]"
+226:                   style={{
+227:                     left: coords.left,
+228:                     top: coords.top,
+229:                     transform: anchorTransform[side],
+230:                   }}
+231:                 >
+232:                   <motion.span
+233:                     id={id}
+234:                     role="tooltip"
+235:                     variants={variants}
+236:                     initial="initial"
+237:                     animate="animate"
+238:                     exit="exit"
+239:                     style={{ transformOrigin: transformOrigin[side] }}
+240:                     className={cn(
+241:                       "block whitespace-nowrap rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground shadow-lg",
+242:                       className
+243:                     )}
+244:                   >
+245:                     {content}
+246:                   </motion.span>
+247:                 </span>
+248:               ) : null}
+249:             </AnimatePresence>,
+250:             document.body
+251:           )}
+252:     </>
+253:   );
+254: };
+
+(End of file - total 254 lines)
+</content>

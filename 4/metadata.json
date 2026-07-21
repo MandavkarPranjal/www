@@ -1,0 +1,116 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "01KY27KHZEEHNZVDH0A0X35VXR",
+  "session_id": "ses_0813a9f02ffehy5AV1Q37HkcCi",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-21T11:40:10.726567424Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "app/page.tsx",
+    "components/ui/theme-switch-button.tsx",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.5-free",
+  "turn_id": "8865cdb3d060",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 11454,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 257088,
+    "output_tokens": 1384,
+    "api_call_count": 14
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-21T11:40:10.71779688Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 116,
+    "human_removed": 174,
+    "total_committed": 0,
+    "total_lines_changed": 318,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 562,
+      "user_lines_removed": 173,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "app/page.tsx": 173,
+        "components/ui/tooltip.tsx": 254,
+        "lib/ease.ts": 45,
+        "lib/hooks/use-hover-capable.ts": 25,
+        "package.json": 2,
+        "pnpm-lock.yaml": 63
+      },
+      "user_removed_per_file": {
+        "app/page.tsx": 173
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 23,
+      "user_lines_removed": 20,
+      "agent_lines_added": 562,
+      "agent_lines_removed": 173,
+      "user_added_per_file": {
+        "components/ui/theme-switch-button.tsx": 23
+      },
+      "user_removed_per_file": {
+        "components/ui/theme-switch-button.tsx": 20
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 31,
+      "user_lines_removed": 35,
+      "agent_lines_added": 389,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "components/ui/tooltip.tsx": 31
+      },
+      "user_removed_per_file": {
+        "components/ui/tooltip.tsx": 31,
+        "package.json": 1,
+        "pnpm-lock.yaml": 3
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 31,
+      "user_lines_removed": 31,
+      "agent_lines_added": 385,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "components/ui/tooltip.tsx": 31
+      },
+      "user_removed_per_file": {
+        "components/ui/tooltip.tsx": 31
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 31,
+      "user_lines_removed": 31,
+      "agent_lines_added": 408,
+      "agent_lines_removed": 20,
+      "user_added_per_file": {
+        "components/ui/tooltip.tsx": 31
+      },
+      "user_removed_per_file": {
+        "components/ui/tooltip.tsx": 31
+      }
+    }
+  ]
+}

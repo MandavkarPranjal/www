@@ -1,0 +1,42 @@
+use @components/ui/tooltip.tsx on all needed things
+
+---
+
+Only plain objects can be passed to Client Components from Server Components. Classes or other objects with methods are not supported.
+  <... href=... icon={{$$typeof: ..., render: ...}} label=...>
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Only plain objects can be passed to Client Components from Server Components. Classes or other objects with methods are not supported.
+  <... href=... icon={{$$typeof: ..., render: ...}} label=...>
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Only plain objects can be passed to Client Components from Server Components. Classes or other objects with methods are not supported.
+  <... href=... icon={{$$typeof: ..., render: ...}} label=...>
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ ⨯ Error: Functions cannot be passed directly to Client Components unless you explicitly expose it by marking it with "use server". Or maybe you meant to call this function rather than return it.
+  {$$typeof: ..., render: function BrandGithub}
+                          ^^^^^^^^^^^^^^^^^^^^
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2957993769'
+}
+ ⨯ Error: Functions cannot be passed directly to Client Components unless you explicitly expose it by marking it with "use server". Or maybe you meant to call this function rather than return it.
+  {$$typeof: ..., render: function BrandX}
+                          ^^^^^^^^^^^^^^^
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1564336521'
+}
+ ⨯ Error: Functions cannot be passed directly to Client Components unless you explicitly expose it by marking it with "use server". Or maybe you meant to call this function rather than return it.
+  {$$typeof: ..., render: function Mail}
+                          ^^^^^^^^^^^^^
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3988119625'
+}
+
+---
+
+theme toggle tooptip should be dynamic
+
+---
+
+no bottom but left

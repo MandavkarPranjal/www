@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "01KY27KHZEEHNZVDH0A0X35VXR",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "app/page.tsx",
+    "components.json",
+    "components/search-hint.tsx",
+    "components/share-buttons.tsx",
+    "components/social-link.tsx",
+    "components/ui/theme-switch-button.tsx",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24322,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 499584,
+    "output_tokens": 9996,
+    "api_call_count": 24
+  }
+}

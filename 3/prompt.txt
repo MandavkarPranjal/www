@@ -1,0 +1,354 @@
+use @components/ui/accordion.tsx for testing purpose
+Called the Read tool with the following input: {"filePath":"/home/himmel/personal/www/components/ui/accordion.tsx"}
+<path>/home/himmel/personal/www/components/ui/accordion.tsx</path>
+<type>file</type>
+<content>
+1: "use client";
+2: 
+3: import { ChevronDown } from "lucide-react";
+4: import { motion, useReducedMotion } from "motion/react";
+5: import type { Transition } from "motion/react";
+6: import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
+7: import type { ReactNode } from "react";
+8: 
+9: import { EASE_OUT } from "@/lib/ease";
+10: import { cn } from "@/lib/utils";
+11: 
+12: export interface AccordionItem {
+13:   id: string;
+14:   title: ReactNode;
+15:   description?: ReactNode;
+16:   icon?: ReactNode;
+17:   disabled?: boolean;
+18: }
+19: 
+20: export interface AccordionClassNames {
+21:   root?: string;
+22:   item?: string;
+23:   trigger?: string;
+24:   icon?: string;
+25:   title?: string;
+26:   chevron?: string;
+27:   content?: string;
+28:   description?: string;
+29: }
+30: 
+31: export interface AccordionProps {
+32:   items: AccordionItem[];
+33:   value?: string | null;
+34:   defaultValue?: string | null;
+35:   onValueChange?: (value: string | null) => void;
+36:   collapsible?: boolean;
+37:   className?: string;
+38:   classNames?: AccordionClassNames;
+39: }
+40: 
+41: // Local springs keep the accordion's connected groups moving together while
+42: // avoiding scale projection on text-heavy row contents.
+43: // Gap spring: must not overshoot y — positive y overshoot drifts items below
+44: // their mt-3 resting point and briefly overlaps the next item.
+45: const ROW_TRANSITION: Transition = {
+46:   bounce: 0.18,
+47:   duration: 0.45,
+48:   type: "spring",
+49: };
+50: 
+51: const CONTENT_OPEN_TRANSITION: Transition = {
+52:   bounce: 0.16,
+53:   duration: 0.46,
+54:   type: "spring",
+55: };
+56: 
+57: const CONTENT_CLOSE_TRANSITION: Transition = {
+58:   bounce: 0.14,
+59:   duration: 0.4,
+60:   type: "spring",
+61: };
+62: 
+63: const DESCRIPTION_TRANSITION: Transition = {
+64:   duration: 0.22,
+65:   ease: EASE_OUT,
+66: };
+67: 
+68: const CHEVRON_TRANSITION: Transition = {
+69:   bounce: 0.16,
+70:   duration: 0.38,
+71:   type: "spring",
+72: };
+73: 
+74: const useControllableAccordionValue = function useControllableAccordionValue({
+75:   value,
+76:   defaultValue,
+77:   onValueChange,
+78: }: {
+79:   value?: string | null;
+80:   defaultValue?: string | null;
+81:   onValueChange?: (value: string | null) => void;
+82: }) {
+83:   const [internalValue, setInternalValue] = useState(defaultValue ?? null);
+84:   const isControlled = value !== undefined;
+85:   const currentValue = value ?? internalValue;
+86: 
+87:   const setValue = useCallback(
+88:     (next: string | null) => {
+89:       if (!isControlled) {
+90:         setInternalValue(next);
+91:       }
+92: 
+93:       onValueChange?.(next);
+94:     },
+95:     [isControlled, onValueChange]
+96:   );
+97: 
+98:   return [currentValue, setValue] as const;
+99: };
+100: 
+101: const getAnimateStyle = function  getAnimateStyle(
+102:   startsGroup: boolean,
+103:   endsGroup: boolean
+104: ): {
+105:   borderTopLeftRadius: number;
+106:   borderTopRightRadius: number;
+107:   borderBottomLeftRadius: number;
+108:   borderBottomRightRadius: number;
+109: } {
+110:   return {
+111:     borderBottomLeftRadius: endsGroup ? 28 : 0,
+112:     borderBottomRightRadius: endsGroup ? 28 : 0,
+113:     borderTopLeftRadius: startsGroup ? 28 : 0,
+114:     borderTopRightRadius: startsGroup ? 28 : 0,
+115:   };
+116: };
+117: 
+118: const getTransition = function getTransition(
+119:   reduce: boolean | null,
+120:   open: boolean
+121: ): Transition {
+122:   if (reduce) {
+123:     return { duration: 0 };
+124:   }
+125:   return open ? CONTENT_OPEN_TRANSITION : CONTENT_CLOSE_TRANSITION;
+126: };
+127: 
+128: const TriggerIcon = function TriggerIcon({
+129:   icon,
+130:   className,
+131: }: {
+132:   icon?: ReactNode;
+133:   className?: string;
+134: }) {
+135:   if (!icon) {
+136:     return null;
+137:   }
+138:   return (
+139:     <span
+140:       className={cn(
+141:         "grid h-7 w-7 shrink-0 place-items-center text-muted-foreground",
+142:         className
+143:       )}
+144:     >
+145:       {icon}
+146:     </span>
+147:   );
+148: };
+149: 
+150: const AccordionRow = function AccordionRow({
+151:   item,
+152:   open,
+153:   startsGroup,
+154:   endsGroup,
+155:   separatedFromPrevious,
+156:   contentId,
+157:   triggerId,
+158:   reduce,
+159:   classNames,
+160:   onToggle,
+161: }: {
+162:   item: AccordionItem;
+163:   open: boolean;
+164:   startsGroup: boolean;
+165:   endsGroup: boolean;
+166:   separatedFromPrevious: boolean;
+167:   contentId: string;
+168:   triggerId: string;
+169:   reduce: boolean | null;
+170:   classNames?: AccordionClassNames;
+171:   onToggle: () => void;
+172: }) {
+173:   const contentRef = useRef<HTMLDivElement>(null);
+174:   const [contentHeight, setContentHeight] = useState(0);
+175: 
+176:   useLayoutEffect(() => {
+177:     const node = contentRef.current;
+178:     if (!node) {
+179:       return;
+180:     }
+181: 
+182:     const updateHeight = () => {
+183:       setContentHeight(node.offsetHeight);
+184:     };
+185: 
+186:     updateHeight();
+187: 
+188:     const observer = new ResizeObserver(updateHeight);
+189:     observer.observe(node);
+190: 
+191:     return () => {
+192:       observer.disconnect();
+193:     };
+194:   }, []);
+195: 
+196:   return (
+197:     <motion.div
+198:       layout="position"
+199:       initial={false}
+200:       style={{ marginTop: separatedFromPrevious ? 12 : 0 }}
+201:       transition={reduce ? { duration: 0 } : ROW_TRANSITION}
+202:     >
+203:       <motion.div
+204:         data-state={open ? "open" : "closed"}
+205:         initial={false}
+206:         animate={getAnimateStyle(startsGroup, endsGroup)}
+207:         transition={reduce ? { duration: 0 } : ROW_TRANSITION}
+208:         className={cn(
+209:           "overflow-hidden bg-card text-card-foreground",
+210:           item.disabled && "opacity-50",
+211:           classNames?.item
+212:         )}
+213:       >
+214:         <button
+215:           id={triggerId}
+216:           type="button"
+217:           disabled={item.disabled}
+218:           aria-expanded={open}
+219:           aria-controls={contentId}
+220:           onClick={onToggle}
+221:           className={cn(
+222:             "flex min-h-[54px] w-full items-center gap-4 px-5 text-left outline-none transition-colors",
+223:             "focus-visible:bg-muted/25",
+224:             "disabled:pointer-events-none",
+225:             classNames?.trigger
+226:           )}
+227:         >
+228:           <TriggerIcon icon={item.icon} className={classNames?.icon} />
+229:           <span
+230:             className={cn(
+231:               "min-w-0 flex-1 truncate text-[15px] font-medium text-foreground",
+232:               classNames?.title
+233:             )}
+234:           >
+235:             {item.title}
+236:           </span>
+237:           <motion.span
+238:             aria-hidden
+239:             animate={{ rotate: open ? 180 : 0 }}
+240:             transition={reduce ? { duration: 0 } : CHEVRON_TRANSITION}
+241:             className={cn(
+242:               "grid h-6 w-6 shrink-0 place-items-center text-muted-foreground",
+243:               classNames?.chevron
+244:             )}
+245:           >
+246:             <ChevronDown className="h-4 w-4" />
+247:           </motion.span>
+248:         </button>
+249: 
+250:         <motion.div
+251:           layout="size"
+252:           id={contentId}
+253:           role="region"
+254:           aria-labelledby={triggerId}
+255:           aria-hidden={!open}
+256:           initial={false}
+257:           style={{ height: open && item.description ? contentHeight : 0 }}
+258:           transition={getTransition(reduce, open)}
+259:           className={cn("overflow-hidden", classNames?.content)}
+260:         >
+261:           <motion.div
+262:             ref={contentRef}
+263:             animate={{
+264:               opacity: open ? 1 : 0,
+265:             }}
+266:             transition={reduce ? { duration: 0 } : DESCRIPTION_TRANSITION}
+267:             className="px-5 pb-5"
+268:           >
+269:             <div
+270:               className={cn(
+271:                 "text-[15px] leading-6 text-muted-foreground",
+272:                 classNames?.description
+273:               )}
+274:             >
+275:               {item.description}
+276:             </div>
+277:           </motion.div>
+278:         </motion.div>
+279:       </motion.div>
+280:     </motion.div>
+281:   );
+282: };
+283: 
+284: export const Accordion = function Accordion({
+285:   items,
+286:   value,
+287:   defaultValue = null,
+288:   onValueChange,
+289:   collapsible = true,
+290:   className,
+291:   classNames,
+292: }: AccordionProps) {
+293:   const reduce = useReducedMotion();
+294:   const baseId = useId();
+295:   const [activeValue, setActiveValue] = useControllableAccordionValue({
+296:     defaultValue,
+297:     onValueChange,
+298:     value,
+299:   });
+300:   const activeIndex = items.findIndex((item) => item.id === activeValue);
+301: 
+302:   const toggleItem = useCallback(
+303:     (id: string) => {
+304:       if (activeValue === id) {
+305:         if (collapsible) {
+306:           setActiveValue(null);
+307:         }
+308:         return;
+309:       }
+310: 
+311:       setActiveValue(id);
+312:     },
+313:     [activeValue, collapsible, setActiveValue]
+314:   );
+315: 
+316:   return (
+317:     <div className={cn("w-full", className, classNames?.root)}>
+318:       {items.map((item, index) => {
+319:         const open = activeValue === item.id;
+320:         const previousIsOpen = activeIndex === index - 1;
+321:         const nextIsOpen = activeIndex === index + 1;
+322:         const startsGroup = open || index === 0 || previousIsOpen;
+323:         const endsGroup = open || index === items.length - 1 || nextIsOpen;
+324:         const separatedFromPrevious = index > 0 && (open || previousIsOpen);
+325:         const contentId = `${baseId}-${item.id}-content`;
+326:         const triggerId = `${baseId}-${item.id}-trigger`;
+327: 
+328:         return (
+329:           <AccordionRow
+330:             key={item.id}
+331:             item={item}
+332:             open={open}
+333:             startsGroup={startsGroup}
+334:             endsGroup={endsGroup}
+335:             separatedFromPrevious={separatedFromPrevious}
+336:             contentId={contentId}
+337:             triggerId={triggerId}
+338:             reduce={reduce}
+339:             classNames={classNames}
+340:             onToggle={() => toggleItem(item.id)}
+341:           />
+342:         );
+343:       })}
+344:     </div>
+345:   );
+346: };
+
+(End of file - total 346 lines)
+</content>
